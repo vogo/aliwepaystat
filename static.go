@@ -11,7 +11,7 @@ var Files = map[string]string{
     <head>
         <meta charset="UTF-8">
         <title>statistics report</title>
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+        <link rel="stylesheet" href="http://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.css">
     </head>
     <body>
     <div class="container">
@@ -22,7 +22,7 @@ var Files = map[string]string{
 {{ end }}`,
 
 	"month-stat-report.html": `{{ define "trans_list_table"}}
-    <table>
+    <table class="table">
         <tr>
             <th>时间</th>
             <th>交易方</th>
@@ -43,34 +43,79 @@ var Files = map[string]string{
 {{ define "content" }}
     <h1>{{$.YearMonth}} 收支统计报告</h1>
     <ul>
-        <li>收入: {{$.TotalIncome}}</li>
-        <li>支出: {{$.TotalExpense}}</li>
-        <li>转账: {{$.Transfer.Total}}</li>
-        <li>花呗还款: {{$.HuabeiRepayment.Total}}</li>
-        <li>交通: {{$.TravelExpense.Total}}</li>
-        <li>餐饮: {{$.EatExpense.Total}}</li>
-        <li>水电: {{$.WaterElectGasExpense.Total}}</li>
-        <li>话费: {{$.TelExpense.Total}}</li>
-        <li>其他: {{$.OtherExpense.Total}}</li>
+        <li>-------贷款----------</li>
+        <li>贷款总额: {{$.Loan.Total}}</li>
+        <li>贷款还款: {{$.LoanRepayment.Total}}</li>
+        <li>-------转账收支----------</li>
+        <li>转账收入: {{$.IncomeTransfer.Total}}</li>
+        <li>转账支出: {{$.ExpenseTransfer.Total}}</li>
+        <li>-------支出----------</li>
+        <li>总支出: {{$.ExpenseTotal}}</li>
+        <li>交通支出: {{$.ExpenseTravel.Total}}</li>
+        <li>餐饮支出: {{$.ExpenseEat.Total}}</li>
+        <li>水电支出: {{$.ExpenseWaterElectGas.Total}}</li>
+        <li>话费支出: {{$.ExpenseTel.Total}}</li>
+        <li>其他支出: {{$.ExpenseOther.Total}}</li>
+        <li>-------收入----------</li>
+        <li>总收入: {{$.Income.Total}}</li>
+        <li>-------其他----------</li>
+        <li>信用还款: {{$.CreditRepayment.Total}}</li>
+        <li>内部转账: {{$.InnerTransfer.Total}}</li>
     </ul>
 
-    <h2>转账明细</h2>
-    {{ template "trans_list_table" $.Transfer }}
 
-    <h2>交通明细</h2>
-    {{ template "trans_list_table" $.TravelExpense }}
+    <hr>
+    <h2>1. 贷款</h2>
+    <h3>1.1 贷款明细</h3>
+    {{ template "trans_list_table" $.Loan }}
 
-    <h2>餐饮明细</h2>
-    {{ template "trans_list_table" $.EatExpense }}
+    <h3>1.2 贷款还款明细</h3>
+    {{ template "trans_list_table" $.LoanRepayment }}
 
-    <h2>水电明细</h2>
-    {{ template "trans_list_table" $.WaterElectGasExpense }}
+    <hr>
+    <h2>2. 转账收支</h2>
 
-    <h2>话费明细</h2>
-    {{ template "trans_list_table" $.TelExpense }}
+    <h3>2.1 转账收入明细</h3>
+    {{ template "trans_list_table" $.IncomeTransfer }}
 
-    <h2>其他明细</h2>
-    {{ template "trans_list_table" $.OtherExpense }}
+    <h3>2.2 转账支出明细</h3>
+    {{ template "trans_list_table" $.ExpenseTransfer }}
+
+    <hr>
+    <h2>3. 支出</h2>
+
+    <h3>3.1 交通明细</h3>
+    {{ template "trans_list_table" $.ExpenseTravel }}
+
+    <h3>3.2 餐饮明细</h3>
+    {{ template "trans_list_table" $.ExpenseEat }}
+
+    <h3>3.3 水电明细</h3>
+    {{ template "trans_list_table" $.ExpenseWaterElectGas }}
+
+    <h3>3.4 话费明细</h3>
+    {{ template "trans_list_table" $.ExpenseTel }}
+
+    <h3>3.5 其他明细</h3>
+    {{ template "trans_list_table" $.ExpenseOther }}
+
+    <hr>
+    <h2>4. 收入</h2>
+
+    <h3>4.1 转账收入明细</h3>
+    {{ template "trans_list_table" $.IncomeTransfer }}
+
+    <h3>4.2 其他收入明细</h3>
+    {{ template "trans_list_table" $.Income }}
+
+
+    <hr>
+    <h2>5. 其他</h2>
+    <h3>5.1 信用还款明细</h3>
+    {{ template "trans_list_table" $.CreditRepayment }}
+
+    <h3>5.2 内部转账明细</h3>
+    {{ template "trans_list_table" $.InnerTransfer }}
 
 {{ end }}
 `,
