@@ -1,15 +1,27 @@
 package main
 
 import (
-	"bytes"
 	"encoding/csv"
-	"fmt"
 	"io"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/jszwec/csvutil"
+)
+
+var (
+	innerTransferKeyWords = []string{"余额宝-自动转入"}
+	incomeKeyWords        = []string{"收入", "红包奖励发放", "收益发放"}
+
+	eatKeyWords           = []string{"美团", "口碑", "菜", "餐", "食", "饭", "面", "超市", "汉堡", "安德鲁森", "节奏者"}
+	travelKeyWords        = []string{"出行", "交通", "公交", "车", "打的", "的士", "taxi", "滴滴"}
+	waterElectGasKeyWords = []string{"水费", "电费", "燃气"}
+	telKeyWords           = []string{"话费", "电信", "移动", "联通", "手机充值"}
+	transferKeyWords      = []string{"转账"}
+
+	familyMembers = []string{"honey kiera", "望哥", "守望人之初"}
 )
 
 func Contains(s string, f string) bool {
@@ -23,7 +35,6 @@ func ContainsAny(s string, f ...string) bool {
 	}
 	return false
 }
-
 
 //AlipayTrans alipay transaction
 type AlipayTrans struct {
@@ -46,100 +57,116 @@ type AlipayTrans struct {
 }
 
 func (t *AlipayTrans) isIncome() bool {
-	if t.FinType == "收入" || strings.Contains(t.Product, "余额宝-自动转入") {
-		return true
-	}
-	return false
+	return t.FinType == "收入" || ContainsAny(t.Product, incomeKeyWords...)
+}
+
+func (t *AlipayTrans) isInnerTransfer() bool {
+	return ContainsAny(t.Product, innerTransferKeyWords...)
+}
+
+func (t *AlipayTrans) isClosed() bool {
+	return Contains(t.Status, "交易关闭")
 }
 
 func (t *AlipayTrans) yearMonth() string {
 	return t.ID[:6]
 }
 
+type TransGroup struct {
+	Total     float32
+	TransList []*AlipayTrans
+}
+
+func (g *TransGroup) add(trans *AlipayTrans) {
+	g.Total += trans.Amount
+	g.TransList = append(g.TransList, trans)
+}
+
 type MonthStat struct {
-	yearMonth            string
-	totalIncome          float32
-	totalExpense         float32
-	totalTransfer        float32
-	huabeiRepayment      float32
-	travelExpense        float32
-	eatExpense           float32
-	waterElectGasExpense float32
-	telExpense           float32
-	otherExpense         float32
+	YearMonth            string
+	TotalIncome          float32
+	TotalExpense         float32
+	Transfer             *TransGroup
+	HuabeiRepayment      *TransGroup
+	TravelExpense        *TransGroup
+	EatExpense           *TransGroup
+	WaterElectGasExpense *TransGroup
+	TelExpense           *TransGroup
+	OtherExpense         *TransGroup
 }
-
-
-func addBufferAmount(buffer *bytes.Buffer, key string, amount float32) {
-	buffer.WriteString(fmt.Sprintf("\t%s: %f", key, amount))
-}
-func (ms *MonthStat) String() string {
-	var buffer bytes.Buffer
-	b := &buffer
-
-	b.WriteString("月份: " + ms.yearMonth)
-	addBufferAmount(b, "收入", ms.totalIncome)
-	addBufferAmount(b, "支出", ms.totalExpense)
-	addBufferAmount(b, "转账", ms.totalTransfer)
-	addBufferAmount(b, "花呗还款", ms.huabeiRepayment)
-	addBufferAmount(b, "交通", ms.travelExpense)
-	addBufferAmount(b, "餐饮", ms.eatExpense)
-	addBufferAmount(b, "水电", ms.waterElectGasExpense)
-	addBufferAmount(b, "话费", ms.telExpense)
-	addBufferAmount(b, "其他", ms.otherExpense)
-	return buffer.String()
-}
-
-var (
-	eatKeyWords           = []string{"美团", "口碑", "菜", "餐", "食", "饭", "面", "超市", "麦"}
-	travelKeyWords        = []string{"出行", "交通", "公交", "车", "打的", "的士", "taxi"}
-	waterElectGasKeyWords = []string{"水费", "电费", "燃气"}
-	telKeyWords           = []string{"话费", "电信", "移动", "联通","手机充值"}
-)
 
 func (ms *MonthStat) add(trans *AlipayTrans) {
+	//ignore
+	// 1. inner transfer
+	// 2. closed
+	if trans.isInnerTransfer() || trans.isClosed() {
+		return
+	}
+
 	if trans.isIncome() {
-		ms.totalIncome += trans.Amount
+		ms.TotalIncome += trans.Amount
 		return
 	}
 
 	// 花呗还款占不统计到消费中
 	if strings.Contains(trans.Product, "自动还款-花呗") {
-		ms.huabeiRepayment += trans.Amount
+		ms.HuabeiRepayment.add(trans)
 		return
 	}
 
-	if Contains(trans.Product, "转账") || Contains(trans.Target, "honey kiera") {
-		ms.totalTransfer += trans.Amount
+	if ContainsAny(trans.Product, transferKeyWords...) || ContainsAny(trans.Target, familyMembers...) {
+		ms.Transfer.add(trans)
 		return
 	}
 
-	ms.totalExpense += trans.Amount
+	ms.TotalExpense += trans.Amount
 
 	if ContainsAny(trans.Product, travelKeyWords...) {
-		ms.travelExpense += trans.Amount
+		ms.TravelExpense.add(trans)
 	} else if ContainsAny(trans.Product, eatKeyWords...) || ContainsAny(trans.Target, eatKeyWords...) {
-		ms.eatExpense += trans.Amount
+		ms.EatExpense.add(trans)
 	} else if ContainsAny(trans.Product, waterElectGasKeyWords...) || ContainsAny(trans.Target, waterElectGasKeyWords...) {
-		ms.waterElectGasExpense += trans.Amount
+		ms.WaterElectGasExpense.add(trans)
 	} else if ContainsAny(trans.Product, telKeyWords...) || ContainsAny(trans.Target, telKeyWords...) {
-		ms.telExpense += trans.Amount
+		ms.TelExpense.add(trans)
 	} else {
-		ms.otherExpense += trans.Amount
+		ms.OtherExpense.add(trans)
 	}
 }
 
 var (
-	statsMap = make(map[string]*MonthStat)
+	statsMap   = make(map[string]*MonthStat)
+	baseDir    string
+	yearMonths []string
 )
 
 func getMonthStat(yearMonth string) *MonthStat {
 	ms, ok := statsMap[yearMonth]
 	if !ok {
-		ms = &MonthStat{yearMonth: yearMonth}
+		ms = &MonthStat{YearMonth: yearMonth,
+			Transfer:             &TransGroup{},
+			HuabeiRepayment:      &TransGroup{},
+			TravelExpense:        &TransGroup{},
+			EatExpense:           &TransGroup{},
+			WaterElectGasExpense: &TransGroup{},
+			TelExpense:           &TransGroup{},
+			OtherExpense:         &TransGroup{},
+		}
 		statsMap[yearMonth] = ms
+		yearMonths = append(yearMonths, yearMonth)
 	}
 	return ms
+}
+
+func genHtmlReport() {
+	for _, yearMonth := range yearMonths {
+		f, err := os.Create(baseDir + "/alipay-stat-" + yearMonth + ".html")
+		if err != nil {
+			panic(err)
+		}
+		genMonthStatReport(f, statsMap[yearMonth])
+		f.Close()
+	}
 }
 
 func main() {
@@ -152,6 +179,9 @@ func main() {
 		log.Fatalf("打开文件错误! %v", err)
 	}
 	defer file.Close()
+
+	baseDir = filepath.Dir(transFile)
+	log.Println("base dir:", baseDir)
 
 	transHeader, err := csvutil.Header(AlipayTrans{}, "csv")
 	if err != nil {
@@ -175,7 +205,5 @@ func main() {
 		getMonthStat(trans.yearMonth()).add(trans)
 	}
 
-	for _, v := range statsMap {
-		fmt.Println(v)
-	}
+	genHtmlReport()
 }

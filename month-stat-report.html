@@ -1,0 +1,52 @@
+{{ define "trans_list_table"}}
+    <table>
+        <tr>
+            <th>时间</th>
+            <th>交易方</th>
+            <th>商品</th>
+            <th>金额</th>
+        </tr>
+        {{range $trans := $.TransList}}
+            <tr>
+                <td>{{$trans.CreatedTime}}</td>
+                <td>{{$trans.Target}}</td>
+                <td>{{$trans.Product}}</td>
+                <td>{{$trans.Amount}}</td>
+            </tr>
+        {{end}}
+    </table>
+{{ end }}
+
+{{ define "content" }}
+    <h1>{{$.YearMonth}} 收支统计报告</h1>
+    <ul>
+        <li>收入: {{$.TotalIncome}}</li>
+        <li>支出: {{$.TotalExpense}}</li>
+        <li>转账: {{$.Transfer.Total}}</li>
+        <li>花呗还款: {{$.HuabeiRepayment.Total}}</li>
+        <li>交通: {{$.TravelExpense.Total}}</li>
+        <li>餐饮: {{$.EatExpense.Total}}</li>
+        <li>水电: {{$.WaterElectGasExpense.Total}}</li>
+        <li>话费: {{$.TelExpense.Total}}</li>
+        <li>其他: {{$.OtherExpense.Total}}</li>
+    </ul>
+
+    <h2>转账明细</h2>
+    {{ template "trans_list_table" $.Transfer }}
+
+    <h2>交通明细</h2>
+    {{ template "trans_list_table" $.TravelExpense }}
+
+    <h2>餐饮明细</h2>
+    {{ template "trans_list_table" $.EatExpense }}
+
+    <h2>水电明细</h2>
+    {{ template "trans_list_table" $.WaterElectGasExpense }}
+
+    <h2>话费明细</h2>
+    {{ template "trans_list_table" $.TelExpense }}
+
+    <h2>其他明细</h2>
+    {{ template "trans_list_table" $.OtherExpense }}
+
+{{ end }}
