@@ -1,4 +1,4 @@
-package aliwepaystat
+package main
 
 import (
 	"flag"
