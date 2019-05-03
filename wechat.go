@@ -18,18 +18,18 @@ const (
 //WechatTrans Wechat transaction
 type WechatTrans struct {
 	CreatedTime string `csv:"created_time"`
-	Type     string `csv:"type"`
-	Target   string `csv:"target"`
-	Product  string `csv:"product"`
-	FinType  string `csv:"fin_type"`
-	Amount   string `csv:"amount"`
-	amt      float64
-	Source   string `csv:"source"`
-	Status   string `csv:"status"`
-	ID       string `csv:"id"`
-	OrderID  string `csv:"order_id"`
-	Comment  string `csv:"comment"`
-	refund   float64
+	Type        string `csv:"type"`
+	Target      string `csv:"target"`
+	Product     string `csv:"product"`
+	FinType     string `csv:"fin_type"`
+	Amount      string `csv:"amount"`
+	amt         float64
+	Source      string `csv:"source"`
+	Status      string `csv:"status"`
+	ID          string `csv:"id"`
+	OrderID     string `csv:"order_id"`
+	Comment     string `csv:"comment"`
+	refund      float64
 }
 
 func (t *WechatTrans) IsIncome() bool {
@@ -52,13 +52,13 @@ func (t *WechatTrans) YearMonth() string {
 	return t.CreatedTime[0:4] + t.CreatedTime[5:7]
 }
 
-func (t *WechatTrans) GetID() string       { return t.ID }
-func (t *WechatTrans) GetOrderID() string  { return t.OrderID }
+func (t *WechatTrans) GetID() string          { return t.ID }
+func (t *WechatTrans) GetOrderID() string     { return t.OrderID }
 func (t *WechatTrans) GetCreatedTime() string { return t.CreatedTime }
-func (t *WechatTrans) GetSource() string   { return t.Source }
-func (t *WechatTrans) GetType() string     { return t.Type }
-func (t *WechatTrans) GetTarget() string   { return t.Target }
-func (t *WechatTrans) GetProduct() string  { return t.Product }
+func (t *WechatTrans) GetSource() string      { return t.Source }
+func (t *WechatTrans) GetType() string        { return t.Type }
+func (t *WechatTrans) GetTarget() string      { return t.Target }
+func (t *WechatTrans) GetProduct() string     { return t.Product }
 func (t *WechatTrans) GetAmount() float64 {
 	if t.amt == 0 && t.Amount != "" {
 		var err error

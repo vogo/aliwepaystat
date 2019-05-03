@@ -16,7 +16,8 @@ var (
 	incomeKeyWords        = []string{"收入", "红包奖励发放", "收益发放", "奖励", "退款"}
 	repaymentKeyWords     = []string{"还款"}
 	loanRepaymentKeyWords = []string{"蚂蚁借呗还款"}
-	eatKeyWords           = []string{"美团", "饿了么", "口碑", "外卖", "菜", "餐饮", "美食", "饭", "超市", "汉堡", "安德鲁森", "节奏者", "拉面", "洪濑鸡爪", "肉夹馍", "麦之屋", "沙县小吃", "重庆小面"}
+	eatKeyWords           = []string{"美团", "饿了么", "口碑", "外卖", "菜", "餐饮", "美食", "饭", "超市", "汉堡", "安德鲁森",
+		"节奏者", "拉面", "洪濑鸡爪", "肉夹馍", "麦之屋", "沙县小吃", "重庆小面", "咖啡", "85度C"}
 	travelKeyWords        = []string{"出行", "交通", "公交", "车", "打的", "的士", "taxi", "滴滴", "地铁"}
 	waterElectGasKeyWords = []string{"水费", "电费", "燃气"}
 	telKeyWords           = []string{"话费", "电信", "移动", "联通", "手机充值"}
