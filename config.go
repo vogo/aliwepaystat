@@ -1,4 +1,6 @@
-package main
+// Copyright 2019 wongoo. All rights reserved.
+
+package aliwepaystat
 
 import (
 	"bufio"
@@ -22,7 +24,7 @@ var (
 	familyMembers []string
 )
 
-func parseConfig(configFile string) {
+func ParseConfig(configFile string) {
 	props := readProperties(configFile)
 
 	parseConfigValues(props, &loanKeyWords, "loan")

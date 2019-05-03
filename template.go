@@ -1,4 +1,6 @@
-package main
+// Copyright 2019 wongoo. All rights reserved.
+
+package aliwepaystat
 
 import (
 	"html/template"

@@ -1,7 +1,9 @@
-package main
+// Copyright 2019 wongoo. All rights reserved.
+
+package aliwepaystat
 
 type MonthStat struct {
-	TransMap             map[string]*AlipayTrans
+	TransMap             map[string]Trans
 	YearMonth            string
 	InnerTransfer        *TransGroup
 	Income               *TransGroup
@@ -9,7 +11,7 @@ type MonthStat struct {
 	Loan                 *TransGroup
 	LoanRepayment        *TransGroup
 	CreditRepayment      *TransGroup
-	ExpenseTotal         float32
+	ExpenseTotal         float64
 	ExpenseTransfer      *TransGroup
 	ExpenseTravel        *TransGroup
 	ExpenseEat           *TransGroup
@@ -18,47 +20,47 @@ type MonthStat struct {
 	ExpenseOther         *TransGroup
 }
 
-func (ms *MonthStat) add(trans *AlipayTrans) {
+func (ms *MonthStat) add(trans Trans) {
 	//ignore closed
-	if trans.isClosed() {
+	if trans.IsClosed() {
 		return
 	}
 
 	// trans already exists
-	if _, ok := ms.TransMap[trans.ID]; ok {
+	if _, ok := ms.TransMap[trans.GetID()]; ok {
 		return
 	}
-	ms.TransMap[trans.ID] = trans
+	ms.TransMap[trans.GetID()] = trans
 
 	// [1] 贷款放在收入之前判断
-	if BothContainsAny(trans.Product, trans.Target, loanKeyWords...) {
+	if EitherContainsAny(trans.GetProduct(), trans.GetTarget(), loanKeyWords...) {
 		ms.Loan.add(trans)
 		return
 	}
 
 	// [2] 贷款还款
-	if BothContainsAny(trans.Product, trans.Target, loanRepaymentKeyWords...) {
+	if EitherContainsAny(trans.GetProduct(), trans.GetTarget(), loanRepaymentKeyWords...) {
 		ms.LoanRepayment.add(trans)
 		return
 	}
 
 	// [2] 信用还款
-	if BothContainsAny(trans.Product, trans.Target, repaymentKeyWords...) {
+	if EitherContainsAny(trans.GetProduct(), trans.GetTarget(), repaymentKeyWords...) {
 		ms.CreditRepayment.add(trans)
 		return
 	}
 
 	// [3] 内部转账
-	if trans.isInnerTransfer() {
+	if trans.IsInnerTransfer() {
 		ms.InnerTransfer.add(trans)
 		return
 	}
 
 	// [4] 收入判断 (包括转入)
-	if trans.isIncome() {
+	if trans.IsIncome() {
 
 		// 转账收入单独统计，不计入普通收入
-		if ContainsAny(trans.Product, transferKeyWords...) {
+		if ContainsAny(trans.GetProduct(), transferKeyWords...) {
 			ms.IncomeTransfer.add(trans)
 			return
 		}
@@ -68,23 +70,24 @@ func (ms *MonthStat) add(trans *AlipayTrans) {
 	}
 
 	// [5] 转账 (转账支出单独统计，不计入普通支出)
-	if Contains(trans.FundStatus, "资金转移") || BothContainsAny(trans.Product, trans.Target, transferKeyWords...) || ContainsAny(trans.Target, familyMembers...) {
+	if trans.IsTransfer() {
 		ms.ExpenseTransfer.add(trans)
 		return
 	}
 
 	// [6] 开始统计支出
-	ms.ExpenseTotal += trans.Amount
+	ms.ExpenseTotal += trans.GetAmount()
 
-	if BothContainsAny(trans.Product, trans.Target, travelKeyWords...) {
+	switch {
+	case EitherContainsAny(trans.GetProduct(), trans.GetTarget(), travelKeyWords...):
 		ms.ExpenseTravel.add(trans)
-	} else if BothContainsAny(trans.Product, trans.Target, eatKeyWords...) {
+	case EitherContainsAny(trans.GetProduct(), trans.GetTarget(), eatKeyWords...) || IsWechatGroupAAExpense(trans):
 		ms.ExpenseEat.add(trans)
-	} else if BothContainsAny(trans.Product, trans.Target, waterElectGasKeyWords...) {
+	case EitherContainsAny(trans.GetProduct(), trans.GetTarget(), waterElectGasKeyWords...):
 		ms.ExpenseWaterElectGas.add(trans)
-	} else if BothContainsAny(trans.Product, trans.Target, telKeyWords...) {
+	case EitherContainsAny(trans.GetProduct(), trans.GetTarget(), telKeyWords...):
 		ms.ExpenseTel.add(trans)
-	} else {
+	default:
 		ms.ExpenseOther.add(trans)
 	}
 }
@@ -98,7 +101,7 @@ func getMonthStat(yearMonth string) *MonthStat {
 	ms, ok := monthStatsMap[yearMonth]
 	if !ok {
 		ms = &MonthStat{
-			TransMap:             make(map[string]*AlipayTrans),
+			TransMap:             make(map[string]Trans),
 			YearMonth:            yearMonth,
 			Loan:                 &TransGroup{},
 			ExpenseTransfer:      &TransGroup{},

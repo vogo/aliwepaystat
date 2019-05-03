@@ -8,10 +8,10 @@
         </tr>
         {{range $trans := $.TransList}}
             <tr>
-                <td>{{$trans.CreatedTime}}</td>
-                <td>{{$trans.Target}}</td>
-                <td>{{$trans.Product}}</td>
-                <td>{{$trans.Amount}}</td>
+                <td>{{$trans.GetCreatedTime}}</td>
+                <td>{{$trans.GetTarget}}</td>
+                <td>{{$trans.GetProduct}}</td>
+                <td>{{$trans.GetAmount}}</td>
             </tr>
         {{end}}
     </table>
