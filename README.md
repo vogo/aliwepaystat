@@ -18,7 +18,7 @@
 ## 下载工具
 
 ```bash
-go get github.com/wongoo/aliwepaystat/cmd
+go get github.com/wongoo/aliwepaystat/cmd/aliwepaystat
 ```
 
 ## 自定义配置文件
