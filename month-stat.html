@@ -19,27 +19,6 @@
 
 {{ define "content" }}
     <h1>{{$.YearMonth}} 收支统计报告</h1>
-    <ul>
-        <li>-------贷款----------</li>
-        <li>贷款总额: {{$.Loan.Total}}</li>
-        <li>贷款还款: {{$.LoanRepayment.Total}}</li>
-        <li>-------转账收支----------</li>
-        <li>转账收入: {{$.IncomeTransfer.Total}}</li>
-        <li>转账支出: {{$.ExpenseTransfer.Total}}</li>
-        <li>-------支出----------</li>
-        <li>总支出: {{$.ExpenseTotal}}</li>
-        <li>交通支出: {{$.ExpenseTravel.Total}}</li>
-        <li>餐饮支出: {{$.ExpenseEat.Total}}</li>
-        <li>水电支出: {{$.ExpenseWaterElectGas.Total}}</li>
-        <li>话费支出: {{$.ExpenseTel.Total}}</li>
-        <li>其他支出: {{$.ExpenseOther.Total}}</li>
-        <li>-------收入----------</li>
-        <li>总收入: {{$.Income.Total}}</li>
-        <li>-------其他----------</li>
-        <li>信用还款: {{$.CreditRepayment.Total}}</li>
-        <li>内部转账: {{$.InnerTransfer.Total}}</li>
-    </ul>
-
 
     <hr>
     <h2>1. 贷款</h2>

@@ -12,25 +12,34 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"regexp"
+	"sort"
 	"strings"
 )
 
-var (
-	regexFieldSuffixBlank, _ = regexp.Compile("[ ]+,")
-)
+const statOutputFilePrefix = "aliwepaystat-"
 
-func GenHtmlStat(transBaseDir string) {
+func GenHtmlStat(baseDir string) {
 	log.Println("------------------------------------")
+	sort.Strings(yearMonths)
+
+	indexStatFileName := statOutputFilePrefix + "index.html"
+	log.Printf("\t统计文件: %s", indexStatFileName)
+	f, err := os.Create(baseDir + indexStatFileName)
+	if err != nil {
+		panic(err)
+	}
+	genIndexStatReport(f)
+	f.Close()
+
 	for _, yearMonth := range yearMonths {
-		statFileName := "aliwepaystat-" + yearMonth + ".html"
-		f, err := os.Create(transBaseDir + "/" + statFileName)
+		monthStatFileName := statOutputFilePrefix + yearMonth + ".html"
+		f, err := os.Create(baseDir + monthStatFileName)
 		if err != nil {
 			panic(err)
 		}
 		genMonthStatReport(f, monthStatsMap[yearMonth])
 		f.Close()
-		log.Printf("  统计文件: %s", statFileName)
+		log.Printf("\t统计文件: %s", monthStatFileName)
 	}
 }
 
@@ -88,9 +97,10 @@ func ParseCsvTransFile(filePath string, parser TransParser) {
 			continue
 		}
 		if dataLineStarted == true {
-			bytes = regexFieldSuffixBlank.ReplaceAll(bytes, []byte{','})
+			bytes = replaceCsvLineFieldsSuffixBlank(bytes)
 			line := string(bytes)
 			if len(strings.Split(line, ",")) != parser.FieldNum() {
+				// ignore none data line
 				printDataDescLine(line)
 				continue
 			}

@@ -15,7 +15,8 @@ import (
 
 var files = []string{
 	"layout.html",
-	"month-stat-report.html",
+	"index.html",
+	"month-stat.html",
 }
 
 func main() {

@@ -11,7 +11,14 @@ var Files = map[string]string{
     <head>
         <meta charset="UTF-8">
         <title>statistics report</title>
-        <link rel="stylesheet" href="http://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.css">
+        <style type="text/css">
+            body{font-size: 12px;}
+            table{border: 1px solid #ccc; border-collapse: collapse;}
+            th,td{border:1px solid #bbb;padding:2px 5px;}
+            tr:nth-child(odd){background-color:#FFE4C4;}
+            tr:nth-child(even){background-color:#F0F0F0;}
+            th{background-color: #0088ff;color:#FFF;}
+        </style>
     </head>
     <body>
     <div class="container">
@@ -21,7 +28,66 @@ var Files = map[string]string{
     </html>
 {{ end }}`,
 
-	"month-stat-report.html": `{{ define "trans_list_table"}}
+	"index.html": `{{ define "content" }}
+    <h1>收支统计报告</h1>
+
+    <table>
+        <tr>
+            <th rowspan="2">月份</th>
+            <th colspan="2">贷款</th>
+            <th colspan="6">支出</th>
+            <th colspan="2">转账收支</th>
+            <th>收入</th>
+            <th colspan="2">其他</th>
+        </tr>
+        <tr>
+            <th>贷款总额</th>
+            <th>贷款还款</th>
+            <th>总支出</th>
+            <th>交通支出</th>
+            <th>餐饮支出</th>
+            <th>水电支出</th>
+            <th>话费支出</th>
+            <th>其他支出</th>
+            <th>转账支出</th>
+            <th>转账收入</th>
+            <th>总收入</th>
+            <th>信用还款</th>
+            <th>内部转账</th>
+        </tr>
+        {{range $yearMonth := $.yearMonths}}
+            {{ $monthStat := index $.monthStatsMap $yearMonth }}
+        <tr>
+            <td>{{$monthStat.YearMonth}}</td>
+            <td>{{$monthStat.Loan.Total}}</td>
+            <td>{{$monthStat.LoanRepayment.Total}}</td>
+            <td>{{$monthStat.ExpenseTotal}}</td>
+            <td>{{$monthStat.ExpenseTravel.Total}}</td>
+            <td>{{$monthStat.ExpenseEat.Total}}</td>
+            <td>{{$monthStat.ExpenseWaterElectGas.Total}}</td>
+            <td>{{$monthStat.ExpenseTel.Total}}</td>
+            <td>{{$monthStat.ExpenseOther.Total}}</td>
+            <td>{{$monthStat.ExpenseTransfer.Total}}</td>
+            <td>{{$monthStat.IncomeTransfer.Total}}</td>
+            <td>{{$monthStat.Income.Total}}</td>
+            <td>{{$monthStat.CreditRepayment.Total}}</td>
+            <td>{{$monthStat.InnerTransfer.Total}}</td>
+        </tr>
+        {{end}}
+
+    </table>
+
+        <h2>查看明细</h2>
+    {{range $yearMonth := $.yearMonths}}
+        <a href="aliwepaystat-{{$yearMonth}}.html" target="stat_detail">{{$yearMonth}}</a>
+    {{end}}
+
+    <iframe name="stat_detail" style="width: 100%; height: 100%; min-height: 800px;border:0px;min-height: ">
+    </iframe>
+{{ end }}
+`,
+
+	"month-stat.html": `{{ define "trans_list_table"}}
     <table class="table">
         <tr>
             <th>时间</th>
@@ -42,27 +108,6 @@ var Files = map[string]string{
 
 {{ define "content" }}
     <h1>{{$.YearMonth}} 收支统计报告</h1>
-    <ul>
-        <li>-------贷款----------</li>
-        <li>贷款总额: {{$.Loan.Total}}</li>
-        <li>贷款还款: {{$.LoanRepayment.Total}}</li>
-        <li>-------转账收支----------</li>
-        <li>转账收入: {{$.IncomeTransfer.Total}}</li>
-        <li>转账支出: {{$.ExpenseTransfer.Total}}</li>
-        <li>-------支出----------</li>
-        <li>总支出: {{$.ExpenseTotal}}</li>
-        <li>交通支出: {{$.ExpenseTravel.Total}}</li>
-        <li>餐饮支出: {{$.ExpenseEat.Total}}</li>
-        <li>水电支出: {{$.ExpenseWaterElectGas.Total}}</li>
-        <li>话费支出: {{$.ExpenseTel.Total}}</li>
-        <li>其他支出: {{$.ExpenseOther.Total}}</li>
-        <li>-------收入----------</li>
-        <li>总收入: {{$.Income.Total}}</li>
-        <li>-------其他----------</li>
-        <li>信用还款: {{$.CreditRepayment.Total}}</li>
-        <li>内部转账: {{$.InnerTransfer.Total}}</li>
-    </ul>
-
 
     <hr>
     <h2>1. 贷款</h2>

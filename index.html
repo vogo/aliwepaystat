@@ -1,0 +1,57 @@
+{{ define "content" }}
+    <h1>收支统计报告</h1>
+
+    <table>
+        <tr>
+            <th rowspan="2">月份</th>
+            <th colspan="2">贷款</th>
+            <th colspan="6">支出</th>
+            <th colspan="2">转账收支</th>
+            <th>收入</th>
+            <th colspan="2">其他</th>
+        </tr>
+        <tr>
+            <th>贷款总额</th>
+            <th>贷款还款</th>
+            <th>总支出</th>
+            <th>交通支出</th>
+            <th>餐饮支出</th>
+            <th>水电支出</th>
+            <th>话费支出</th>
+            <th>其他支出</th>
+            <th>转账支出</th>
+            <th>转账收入</th>
+            <th>总收入</th>
+            <th>信用还款</th>
+            <th>内部转账</th>
+        </tr>
+        {{range $yearMonth := $.yearMonths}}
+            {{ $monthStat := index $.monthStatsMap $yearMonth }}
+        <tr>
+            <td>{{$monthStat.YearMonth}}</td>
+            <td>{{$monthStat.Loan.Total}}</td>
+            <td>{{$monthStat.LoanRepayment.Total}}</td>
+            <td>{{$monthStat.ExpenseTotal}}</td>
+            <td>{{$monthStat.ExpenseTravel.Total}}</td>
+            <td>{{$monthStat.ExpenseEat.Total}}</td>
+            <td>{{$monthStat.ExpenseWaterElectGas.Total}}</td>
+            <td>{{$monthStat.ExpenseTel.Total}}</td>
+            <td>{{$monthStat.ExpenseOther.Total}}</td>
+            <td>{{$monthStat.ExpenseTransfer.Total}}</td>
+            <td>{{$monthStat.IncomeTransfer.Total}}</td>
+            <td>{{$monthStat.Income.Total}}</td>
+            <td>{{$monthStat.CreditRepayment.Total}}</td>
+            <td>{{$monthStat.InnerTransfer.Total}}</td>
+        </tr>
+        {{end}}
+
+    </table>
+
+        <h2>查看明细</h2>
+    {{range $yearMonth := $.yearMonths}}
+        <a href="aliwepaystat-{{$yearMonth}}.html" target="stat_detail">{{$yearMonth}}</a>
+    {{end}}
+
+    <iframe name="stat_detail" style="width: 100%; height: 100%; min-height: 800px;border:0px;min-height: ">
+    </iframe>
+{{ end }}

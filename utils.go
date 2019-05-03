@@ -2,7 +2,10 @@
 
 package aliwepaystat
 
-import "strings"
+import (
+	"regexp"
+	"strings"
+)
 
 func Contains(s string, f string) bool {
 	return strings.Contains(s, f)
@@ -24,4 +27,12 @@ func EitherContainsAny(s1, s2 string, f ...string) bool {
 		}
 	}
 	return false
+}
+
+var (
+	regexCsvLineFieldsSuffixBlank, _ = regexp.Compile("[ ]+,")
+)
+
+func replaceCsvLineFieldsSuffixBlank(bytes []byte) []byte {
+	return regexCsvLineFieldsSuffixBlank.ReplaceAll(bytes, []byte{','})
 }
