@@ -3,7 +3,9 @@
 package aliwepaystat
 
 import (
+	"fmt"
 	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -35,4 +37,9 @@ var (
 
 func replaceCsvLineFieldsSuffixBlank(bytes []byte) []byte {
 	return regexCsvLineFieldsSuffixBlank.ReplaceAll(bytes, []byte{','})
+}
+
+func RoundFloat(f float64) float64 {
+	v, _ := strconv.ParseFloat(fmt.Sprintf("%.4f", f), 64)
+	return v
 }

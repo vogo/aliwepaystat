@@ -74,6 +74,11 @@ func (t *WechatTrans) GetAmount() float64 {
 	}
 	return t.amt
 }
+
+func (t *WechatTrans) GetFormatAmount() float64 {
+	return RoundFloat(t.GetAmount())
+}
+
 func (t *WechatTrans) GetFinType() string { return t.FinType }
 func (t *WechatTrans) GetStatus() string  { return t.Status }
 func (t *WechatTrans) GetRefund() float64 { return t.refund }

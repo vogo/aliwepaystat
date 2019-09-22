@@ -59,19 +59,19 @@ var Files = map[string]string{
             {{ $monthStat := index $.monthStatsMap $yearMonth }}
         <tr>
             <td>{{$monthStat.YearMonth}}</td>
-            <td>{{$monthStat.Loan.Total}}</td>
-            <td>{{$monthStat.LoanRepayment.Total}}</td>
-            <td>{{$monthStat.ExpenseTotal}}</td>
-            <td>{{$monthStat.ExpenseTravel.Total}}</td>
-            <td>{{$monthStat.ExpenseEat.Total}}</td>
-            <td>{{$monthStat.ExpenseWaterElectGas.Total}}</td>
-            <td>{{$monthStat.ExpenseTel.Total}}</td>
-            <td>{{$monthStat.ExpenseOther.Total}}</td>
-            <td>{{$monthStat.ExpenseTransfer.Total}}</td>
-            <td>{{$monthStat.IncomeTransfer.Total}}</td>
-            <td>{{$monthStat.Income.Total}}</td>
-            <td>{{$monthStat.CreditRepayment.Total}}</td>
-            <td>{{$monthStat.InnerTransfer.Total}}</td>
+            <td>{{$monthStat.Loan.FormatTotal}}</td>
+            <td>{{$monthStat.LoanRepayment.FormatTotal}}</td>
+            <td>{{$monthStat.FormatExpenseTotal}}</td>
+            <td>{{$monthStat.ExpenseTravel.FormatTotal}}</td>
+            <td>{{$monthStat.ExpenseEat.FormatTotal}}</td>
+            <td>{{$monthStat.ExpenseWaterElectGas.FormatTotal}}</td>
+            <td>{{$monthStat.ExpenseTel.FormatTotal}}</td>
+            <td>{{$monthStat.ExpenseOther.FormatTotal}}</td>
+            <td>{{$monthStat.ExpenseTransfer.FormatTotal}}</td>
+            <td>{{$monthStat.IncomeTransfer.FormatTotal}}</td>
+            <td>{{$monthStat.Income.FormatTotal}}</td>
+            <td>{{$monthStat.CreditRepayment.FormatTotal}}</td>
+            <td>{{$monthStat.InnerTransfer.FormatTotal}}</td>
         </tr>
         {{end}}
 
@@ -101,7 +101,7 @@ var Files = map[string]string{
                     <td>{{$trans.GetCreatedTime}}</td>
                     <td>{{$trans.GetTarget}}</td>
                     <td>{{$trans.GetProduct}}</td>
-                    <td>{{$trans.GetAmount}}</td>
+                    <td>{{$trans.GetFormatAmount}}</td>
                 </tr>
             {{end}}
         {{end}}

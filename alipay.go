@@ -69,13 +69,17 @@ func (t *AlipayTrans) GetType() string         { return t.Type }
 func (t *AlipayTrans) GetTarget() string       { return t.Target }
 func (t *AlipayTrans) GetProduct() string      { return t.Product }
 func (t *AlipayTrans) GetAmount() float64      { return t.Amount }
-func (t *AlipayTrans) GetFinType() string      { return t.FinType }
-func (t *AlipayTrans) GetStatus() string       { return t.Status }
-func (t *AlipayTrans) GetCharge() float64      { return t.Charge }
-func (t *AlipayTrans) GetRefund() float64      { return t.Refund }
-func (t *AlipayTrans) GetComment() string      { return t.Comment }
-func (t *AlipayTrans) GetFundStatus() string   { return t.FundStatus }
-func (t *AlipayTrans) IsShowInList() bool      { return t.GetAmount() > cfg.ListMinAmount }
+
+func (t *AlipayTrans) GetFormatAmount() float64 {
+	return RoundFloat(t.GetAmount())
+}
+func (t *AlipayTrans) GetFinType() string    { return t.FinType }
+func (t *AlipayTrans) GetStatus() string     { return t.Status }
+func (t *AlipayTrans) GetCharge() float64    { return t.Charge }
+func (t *AlipayTrans) GetRefund() float64    { return t.Refund }
+func (t *AlipayTrans) GetComment() string    { return t.Comment }
+func (t *AlipayTrans) GetFundStatus() string { return t.FundStatus }
+func (t *AlipayTrans) IsShowInList() bool    { return t.GetAmount() > cfg.ListMinAmount }
 
 func NewAlipayTrans() Trans {
 	return &AlipayTrans{}

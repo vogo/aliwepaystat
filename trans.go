@@ -20,6 +20,7 @@ type Trans interface {
 	GetTarget() string
 	GetProduct() string
 	GetAmount() float64
+	GetFormatAmount() float64
 	GetFinType() string
 	GetStatus() string
 	GetRefund() float64
@@ -42,4 +43,8 @@ type TransGroup struct {
 func (g *TransGroup) add(trans Trans) {
 	g.Total += trans.GetAmount()
 	g.TransList = append(g.TransList, trans)
+}
+
+func (g *TransGroup) FormatTotal() float64 {
+	return RoundFloat(g.Total)
 }

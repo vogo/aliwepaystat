@@ -20,6 +20,10 @@ type MonthStat struct {
 	ExpenseOther         *TransGroup
 }
 
+func (ms *MonthStat) FormatExpenseTotal() float64 {
+	return RoundFloat(ms.ExpenseTotal)
+}
+
 func (ms *MonthStat) add(trans Trans) {
 	//ignore closed
 	if trans.IsClosed() {
