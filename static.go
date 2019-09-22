@@ -82,7 +82,7 @@ var Files = map[string]string{
         <a href="aliwepaystat-{{$yearMonth}}.html" target="stat_detail">{{$yearMonth}}</a>
     {{end}}
 
-    <iframe name="stat_detail" style="width: 100%; height: 100%; min-height: 800px;border:0px;min-height: ">
+    <iframe name="stat_detail" style="width: 100%; height: 100%; min-height: 800px;border:0px; ">
     </iframe>
 {{ end }}
 `,
