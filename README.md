@@ -14,6 +14,7 @@
 ├── 微信支付账单-husband.csv
 ├── 微信支付账单-wife.csv
 ```
+> 注意：支付宝的账单文件名以`alipay`开头, 微信账单文件名以`微信`开头。
 
 ## 下载工具
 
@@ -23,12 +24,12 @@ go get github.com/wongoo/aliwepaystat/cmd/aliwepaystat
 
 ## 自定义配置文件
 
-如 mystatconfig.properties:
+如 my.properties:
 ```
 key.words.loan=放款
 key.words.transfer=转账
 key.words.inner-transfer=余额宝-自动转入,网商银行转入,余额宝-转出到余额,转出到网商银行
-key.words.income=收入,红包奖励发放,收益发放,奖励,退款
+key.words.income=收入,红包奖励发放,收益发放,奖励,退款,收款,Collection Bill
 key.words.repayment=还款
 key.words.loan-repayment=蚂蚁借呗还款
 key.words.eat=美团,饿了么,口碑,外卖,菜,餐饮,美食,饭,超市,汉堡,安德鲁森,节奏者,拉面,洪濑鸡爪,肉夹馍,麦之屋,沙县小吃,重庆小面,咖啡,85度C
@@ -43,5 +44,5 @@ list.min.amount=10.0
 ## 统计
 
 ```bash
-aliwepaystat -c mystatconfig.properties -d /Users/wongoo/aliwepaystat/
+aliwepaystat -c my.properties -d /Users/wongoo/aliwepaystat/
 ```
