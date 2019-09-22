@@ -36,6 +36,8 @@ key.words.travel=出行,交通,公交,车,打的,的士,taxi,滴滴,地铁
 key.words.water-elect-gas=水费,电费,燃气
 key.words.tel=话费,电信,移动,联通,手机充值
 key.words.family=老公,老婆,张仁礼,李德明
+
+list.min.amount=10.0
 ```
 
 ## 统计

@@ -3,11 +3,12 @@
 package aliwepaystat
 
 import (
-	"golang.org/x/text/encoding"
-	"golang.org/x/text/encoding/unicode"
 	"log"
 	"strconv"
 	"strings"
+
+	"golang.org/x/text/encoding"
+	"golang.org/x/text/encoding/unicode"
 )
 
 const (
@@ -33,15 +34,19 @@ type WechatTrans struct {
 }
 
 func (t *WechatTrans) IsIncome() bool {
-	return Contains(t.FinType, "收入") || ContainsAny(t.Product, incomeKeyWords...)
+	return Contains(t.FinType, "收入") ||
+		ContainsAny(t.Product, cfg.IncomeKeyWords...)
 }
 
 func (t *WechatTrans) IsInnerTransfer() bool {
-	return ContainsAny(t.Target, familyMembers...) || ContainsAny(t.Product, innerTransferKeyWords...)
+	return ContainsAny(t.Target, cfg.FamilyMembers...) ||
+		ContainsAny(t.Product, cfg.InnerTransferKeyWords...)
 }
 
 func (t *WechatTrans) IsTransfer() bool {
-	return Contains(t.Type, "转账") || EitherContainsAny(t.Product, t.Target, transferKeyWords...) || ContainsAny(t.Target, familyMembers...)
+	return Contains(t.Type, "转账") ||
+		EitherContainsAny(t.Product, t.Target, cfg.TransferKeyWords...) ||
+		ContainsAny(t.Target, cfg.FamilyMembers...)
 }
 
 func (t *WechatTrans) IsClosed() bool {
@@ -73,6 +78,7 @@ func (t *WechatTrans) GetFinType() string { return t.FinType }
 func (t *WechatTrans) GetStatus() string  { return t.Status }
 func (t *WechatTrans) GetRefund() float64 { return t.refund }
 func (t *WechatTrans) GetComment() string { return t.Comment }
+func (t *WechatTrans) IsShowInList() bool { return t.GetAmount() > cfg.ListMinAmount }
 
 type wechatTransParser struct {
 }

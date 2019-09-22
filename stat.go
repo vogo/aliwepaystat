@@ -6,40 +6,44 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/csv"
-	"github.com/jszwec/csvutil"
-	"golang.org/x/text/transform"
 	"io"
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 	"sort"
 	"strings"
+
+	"github.com/jszwec/csvutil"
+	"golang.org/x/text/transform"
 )
 
 const statOutputFilePrefix = "aliwepaystat-"
 
-func GenHtmlStat(baseDir string) {
+func GenHtmlStat(statDir string) {
 	log.Println("------------------------------------")
 	sort.Strings(yearMonths)
 
 	indexStatFileName := statOutputFilePrefix + "index.html"
-	log.Printf("\t统计文件: %s", indexStatFileName)
-	f, err := os.Create(baseDir + indexStatFileName)
+	indexStatFilePath := filepath.Join(statDir, indexStatFileName)
+	log.Printf("\t统计文件: %s", indexStatFilePath)
+	f, err := os.Create(indexStatFilePath)
 	if err != nil {
 		panic(err)
 	}
 	genIndexStatReport(f)
-	f.Close()
+	_ = f.Close()
 
 	for _, yearMonth := range yearMonths {
 		monthStatFileName := statOutputFilePrefix + yearMonth + ".html"
-		f, err := os.Create(baseDir + monthStatFileName)
+		monthStatFilePath := filepath.Join(statDir, monthStatFileName)
+		log.Printf("\t统计文件: %s", monthStatFilePath)
+		f, err := os.Create(monthStatFilePath)
 		if err != nil {
 			panic(err)
 		}
 		genMonthStatReport(f, monthStatsMap[yearMonth])
-		f.Close()
-		log.Printf("\t统计文件: %s", monthStatFileName)
+		_ = f.Close()
 	}
 }
 
@@ -54,7 +58,9 @@ func ParseCsvTransDir(baseDir string) {
 		if !strings.HasSuffix(fileName, ".csv") {
 			continue
 		}
-		filePath := baseDir + fileName
+
+		filePath := filepath.Join(baseDir, fileName)
+
 		if strings.Contains(fileName, "alipay") {
 			ParseCsvTransFile(filePath, TransParserAlipay)
 		} else if strings.Contains(fileName, "微信") {
@@ -96,7 +102,7 @@ func ParseCsvTransFile(filePath string, parser TransParser) {
 		if len(bytes) == 0 {
 			continue
 		}
-		if dataLineStarted == true {
+		if dataLineStarted {
 			bytes = replaceCsvLineFieldsSuffixBlank(bytes)
 			line := string(bytes)
 			if len(strings.Split(line, ",")) != parser.FieldNum() {

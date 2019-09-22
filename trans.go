@@ -24,6 +24,7 @@ type Trans interface {
 	GetStatus() string
 	GetRefund() float64
 	GetComment() string
+	IsShowInList() bool
 }
 
 type TransParser interface {

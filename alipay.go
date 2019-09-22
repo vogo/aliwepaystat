@@ -34,15 +34,18 @@ type AlipayTrans struct {
 }
 
 func (t *AlipayTrans) IsIncome() bool {
-	return Contains(t.FinType, "收入") || ContainsAny(t.Product, incomeKeyWords...)
+	return Contains(t.FinType, "收入") || ContainsAny(t.Product, cfg.IncomeKeyWords...)
 }
 
 func (t *AlipayTrans) IsInnerTransfer() bool {
-	return ContainsAny(t.Target, familyMembers...) || ContainsAny(t.Product, innerTransferKeyWords...)
+	return ContainsAny(t.Target, cfg.FamilyMembers...) ||
+		ContainsAny(t.Product, cfg.InnerTransferKeyWords...)
 }
 
 func (t *AlipayTrans) IsTransfer() bool {
-	return Contains(t.FundStatus, "资金转移") || EitherContainsAny(t.Product, t.Target, transferKeyWords...) || ContainsAny(t.Target, familyMembers...)
+	return Contains(t.FundStatus, "资金转移") ||
+		EitherContainsAny(t.Product, t.Target, cfg.TransferKeyWords...) ||
+		ContainsAny(t.Target, cfg.FamilyMembers...)
 }
 
 func (t *AlipayTrans) IsClosed() bool {
@@ -72,6 +75,7 @@ func (t *AlipayTrans) GetCharge() float64      { return t.Charge }
 func (t *AlipayTrans) GetRefund() float64      { return t.Refund }
 func (t *AlipayTrans) GetComment() string      { return t.Comment }
 func (t *AlipayTrans) GetFundStatus() string   { return t.FundStatus }
+func (t *AlipayTrans) IsShowInList() bool      { return t.GetAmount() > cfg.ListMinAmount }
 
 func NewAlipayTrans() Trans {
 	return &AlipayTrans{}

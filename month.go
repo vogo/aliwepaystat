@@ -33,19 +33,19 @@ func (ms *MonthStat) add(trans Trans) {
 	ms.TransMap[trans.GetID()] = trans
 
 	// [1] 贷款放在收入之前判断
-	if EitherContainsAny(trans.GetProduct(), trans.GetTarget(), loanKeyWords...) {
+	if EitherContainsAny(trans.GetProduct(), trans.GetTarget(), cfg.LoanKeyWords...) {
 		ms.Loan.add(trans)
 		return
 	}
 
 	// [2] 贷款还款
-	if EitherContainsAny(trans.GetProduct(), trans.GetTarget(), loanRepaymentKeyWords...) {
+	if EitherContainsAny(trans.GetProduct(), trans.GetTarget(), cfg.LoanRepaymentKeyWords...) {
 		ms.LoanRepayment.add(trans)
 		return
 	}
 
 	// [2] 信用还款
-	if EitherContainsAny(trans.GetProduct(), trans.GetTarget(), repaymentKeyWords...) {
+	if EitherContainsAny(trans.GetProduct(), trans.GetTarget(), cfg.RepaymentKeyWords...) {
 		ms.CreditRepayment.add(trans)
 		return
 	}
@@ -60,7 +60,7 @@ func (ms *MonthStat) add(trans Trans) {
 	if trans.IsIncome() {
 
 		// 转账收入单独统计，不计入普通收入
-		if ContainsAny(trans.GetProduct(), transferKeyWords...) {
+		if ContainsAny(trans.GetProduct(), cfg.TransferKeyWords...) {
 			ms.IncomeTransfer.add(trans)
 			return
 		}
@@ -79,13 +79,13 @@ func (ms *MonthStat) add(trans Trans) {
 	ms.ExpenseTotal += trans.GetAmount()
 
 	switch {
-	case EitherContainsAny(trans.GetProduct(), trans.GetTarget(), travelKeyWords...):
+	case EitherContainsAny(trans.GetProduct(), trans.GetTarget(), cfg.TravelKeyWords...):
 		ms.ExpenseTravel.add(trans)
-	case EitherContainsAny(trans.GetProduct(), trans.GetTarget(), eatKeyWords...) || IsWechatGroupAAExpense(trans):
+	case EitherContainsAny(trans.GetProduct(), trans.GetTarget(), cfg.EatKeyWords...) || IsWechatGroupAAExpense(trans):
 		ms.ExpenseEat.add(trans)
-	case EitherContainsAny(trans.GetProduct(), trans.GetTarget(), waterElectGasKeyWords...):
+	case EitherContainsAny(trans.GetProduct(), trans.GetTarget(), cfg.WaterElectGasKeyWords...):
 		ms.ExpenseWaterElectGas.add(trans)
-	case EitherContainsAny(trans.GetProduct(), trans.GetTarget(), telKeyWords...):
+	case EitherContainsAny(trans.GetProduct(), trans.GetTarget(), cfg.TelKeyWords...):
 		ms.ExpenseTel.add(trans)
 	default:
 		ms.ExpenseOther.add(trans)

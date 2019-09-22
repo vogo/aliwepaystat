@@ -96,12 +96,14 @@ var Files = map[string]string{
             <th>金额</th>
         </tr>
         {{range $trans := $.TransList}}
-            <tr>
-                <td>{{$trans.GetCreatedTime}}</td>
-                <td>{{$trans.GetTarget}}</td>
-                <td>{{$trans.GetProduct}}</td>
-                <td>{{$trans.GetAmount}}</td>
-            </tr>
+            {{if $trans.IsShowInList}}
+                <tr>
+                    <td>{{$trans.GetCreatedTime}}</td>
+                    <td>{{$trans.GetTarget}}</td>
+                    <td>{{$trans.GetProduct}}</td>
+                    <td>{{$trans.GetAmount}}</td>
+                </tr>
+            {{end}}
         {{end}}
     </table>
 {{ end }}
