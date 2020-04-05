@@ -4,17 +4,19 @@
     <table>
         <tr>
             <th rowspan="2">月份</th>
+            <th>收入</th>
             <th rowspan="2">投资</th>
             <th colspan="2">贷款</th>
-            <th colspan="6">支出</th>
+            <th colspan="7">支出</th>
             <th colspan="2">转账收支</th>
-            <th>收入</th>
-            <th colspan="2">其他</th>
+            <th>其他</th>
         </tr>
         <tr>
+            <th>总收入</th>
             <th>贷款总额</th>
             <th>贷款还款</th>
             <th>总支出</th>
+            <th>信用还款</th>
             <th>交通支出</th>
             <th>餐饮支出</th>
             <th>水电支出</th>
@@ -22,18 +24,18 @@
             <th>其他支出</th>
             <th>转账支出</th>
             <th>转账收入</th>
-            <th>总收入</th>
-            <th>信用还款</th>
             <th>内部转账</th>
         </tr>
         {{range $yearMonth := $.yearMonths}}
             {{ $monthStat := index $.monthStatsMap $yearMonth }}
         <tr>
             <td>{{$monthStat.YearMonth}}</td>
+            <td>{{$monthStat.Income.FormatTotal}}</td>
             <td>{{$monthStat.Investment.FormatTotal}}</td>
             <td>{{$monthStat.Loan.FormatTotal}}</td>
             <td>{{$monthStat.LoanRepayment.FormatTotal}}</td>
             <td>{{$monthStat.FormatExpenseTotal}}</td>
+            <td>{{$monthStat.CreditRepayment.FormatTotal}}</td>
             <td>{{$monthStat.ExpenseTravel.FormatTotal}}</td>
             <td>{{$monthStat.ExpenseEat.FormatTotal}}</td>
             <td>{{$monthStat.ExpenseWaterElectGas.FormatTotal}}</td>
@@ -41,8 +43,6 @@
             <td>{{$monthStat.ExpenseOther.FormatTotal}}</td>
             <td>{{$monthStat.ExpenseTransfer.FormatTotal}}</td>
             <td>{{$monthStat.IncomeTransfer.FormatTotal}}</td>
-            <td>{{$monthStat.Income.FormatTotal}}</td>
-            <td>{{$monthStat.CreditRepayment.FormatTotal}}</td>
             <td>{{$monthStat.InnerTransfer.FormatTotal}}</td>
         </tr>
         {{end}}
