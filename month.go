@@ -36,7 +36,6 @@ func (ms *MonthStat) add(trans Trans) {
 		return
 	}
 
-
 	ms.TransMap[trans.GetID()] = trans
 
 	// [1] 贷款放在收入之前判断
@@ -59,6 +58,10 @@ func (ms *MonthStat) add(trans Trans) {
 	// [2] 信用还款
 	if EitherContainsAny(trans.GetProduct(), trans.GetTarget(), cfg.RepaymentKeyWords...) {
 		ms.CreditRepayment.add(trans)
+
+		// 信用还款也作为支出的一部分
+		ms.ExpenseTotal += trans.GetAmount()
+
 		return
 	}
 
