@@ -50,7 +50,7 @@ func (t *WechatTrans) IsTransfer() bool {
 }
 
 func (t *WechatTrans) IsClosed() bool {
-	return Contains(t.Status, "交易关闭")
+	return ContainsAny(t.Status, "失败", "交易关闭")
 }
 
 func (t *WechatTrans) YearMonth() string {

@@ -49,7 +49,7 @@ func (t *AlipayTrans) IsTransfer() bool {
 }
 
 func (t *AlipayTrans) IsClosed() bool {
-	return Contains(t.Status, "交易关闭")
+	return ContainsAny(t.Status, "失败", "交易关闭")
 }
 
 func (t *AlipayTrans) YearMonth() string {

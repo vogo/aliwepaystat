@@ -43,3 +43,17 @@ func RoundFloat(f float64) float64 {
 	v, _ := strconv.ParseFloat(fmt.Sprintf("%.4f", f), 64)
 	return v
 }
+
+var (
+	investmentRegex1, _ = regexp.Compile(".*财富.*买入.*")
+	investmentRegex2, _ = regexp.Compile(".*基金.*买入.*")
+	investmentRegex3, _ = regexp.Compile(".*股票.*买入.*")
+	investmentRegex4, _ = regexp.Compile(".*余额宝.*转入.*")
+)
+
+func IsInvestment(s string) bool {
+	return investmentRegex1.MatchString(s) ||
+		investmentRegex2.MatchString(s) ||
+		investmentRegex3.MatchString(s) ||
+		investmentRegex4.MatchString(s)
+}

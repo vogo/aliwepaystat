@@ -14,3 +14,6 @@ static:
 build: format check test static
 	go build cmd/aliwepaystat/aliwepaystat.go
 
+install: format check test static
+	go install cmd/aliwepaystat/aliwepaystat.go
+

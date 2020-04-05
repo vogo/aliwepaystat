@@ -5,6 +5,7 @@ package aliwepaystat
 type MonthStat struct {
 	TransMap             map[string]Trans
 	YearMonth            string
+	Investment           *TransGroup
 	InnerTransfer        *TransGroup
 	Income               *TransGroup
 	IncomeTransfer       *TransGroup
@@ -34,6 +35,8 @@ func (ms *MonthStat) add(trans Trans) {
 	if _, ok := ms.TransMap[trans.GetID()]; ok {
 		return
 	}
+
+
 	ms.TransMap[trans.GetID()] = trans
 
 	// [1] 贷款放在收入之前判断
@@ -45,6 +48,11 @@ func (ms *MonthStat) add(trans Trans) {
 	// [2] 贷款还款
 	if EitherContainsAny(trans.GetProduct(), trans.GetTarget(), cfg.LoanRepaymentKeyWords...) {
 		ms.LoanRepayment.add(trans)
+		return
+	}
+
+	if IsInvestment(trans.GetProduct()) {
+		ms.Investment.add(trans)
 		return
 	}
 
@@ -107,6 +115,7 @@ func getMonthStat(yearMonth string) *MonthStat {
 		ms = &MonthStat{
 			TransMap:             make(map[string]Trans),
 			YearMonth:            yearMonth,
+			Investment:           &TransGroup{},
 			Loan:                 &TransGroup{},
 			ExpenseTransfer:      &TransGroup{},
 			InnerTransfer:        &TransGroup{},

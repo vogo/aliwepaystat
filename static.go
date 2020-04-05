@@ -34,6 +34,7 @@ var Files = map[string]string{
     <table>
         <tr>
             <th rowspan="2">月份</th>
+            <th rowspan="2">投资</th>
             <th colspan="2">贷款</th>
             <th colspan="6">支出</th>
             <th colspan="2">转账收支</th>
@@ -59,6 +60,7 @@ var Files = map[string]string{
             {{ $monthStat := index $.monthStatsMap $yearMonth }}
         <tr>
             <td>{{$monthStat.YearMonth}}</td>
+            <td>{{$monthStat.Investment.FormatTotal}}</td>
             <td>{{$monthStat.Loan.FormatTotal}}</td>
             <td>{{$monthStat.LoanRepayment.FormatTotal}}</td>
             <td>{{$monthStat.FormatExpenseTotal}}</td>
@@ -155,6 +157,8 @@ var Files = map[string]string{
     <h3>4.2 其他收入明细</h3>
     {{ template "trans_list_table" $.Income }}
 
+    <h3>4.3 投资</h3>
+    {{ template "trans_list_table" $.Investment }}
 
     <hr>
     <h2>5. 其他</h2>
