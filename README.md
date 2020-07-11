@@ -30,7 +30,11 @@ list.min.amount=10.0
 
 ### 下载统计工具
 
-在账单目录中执行以下命令下载工具
+下载统计工具并解压到账单目录中。
+
+下载地址: https://github.com/wongoo/aliwepaystat/releases
+
+另外可以自己编译生成工具，在账单目录中执行以下命令编译安装:
 ```bash
 GOBIN=$(pwd) go get github.com/wongoo/aliwepaystat/cmd/aliwepaystat
 ```
