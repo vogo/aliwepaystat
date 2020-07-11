@@ -2,29 +2,16 @@
 
 无现金时代，你几乎所有收支都在支付宝和微信支付里面，将两者合并统计就是你的整体财报了。
 
-## 账单导出方式
-- 微信支付账单导出: https://jingyan.baidu.com/article/95c9d20d04e8f8ec4e756182.html
-- 支付宝账单导出: https://jingyan.baidu.com/article/00a07f38540b2782d028dc17.html
+## 1. 准备工作
 
-导出后解压，将所有csv文件放到一个目录下，形如:
-```
-~  /Users/wongoo/aliwepaystat > tree
-├── alipay_husband.csv
-├── alipay_wife.csv
-├── 微信支付账单-husband.csv
-├── 微信支付账单-wife.csv
-```
-> 注意：支付宝的账单文件名以`alipay`开头, 微信账单文件名以`微信`开头。
+### 创建一个账单目录
 
-## 下载工具
+比如 `/Users/wongoo/aliwepaystat`。
 
-```bash
-go get github.com/wongoo/aliwepaystat/cmd/aliwepaystat
-```
+### 自定义配置文件
 
-## 自定义配置文件
-
-如 my.properties:
+在账单目录中创建 `config.properties` 文件, 其内容为一些衣食住行的一些关键字，
+以便程序能够将一笔交易正确分类，参考内容如下:
 ```
 key.words.loan=放款
 key.words.transfer=转账
@@ -41,8 +28,31 @@ key.words.family=老公,老婆,张仁礼,李德明
 list.min.amount=10.0
 ```
 
-## 统计
+### 下载统计工具
 
+在账单目录中执行以下命令下载工具
 ```bash
-aliwepaystat -c my.properties -d /Users/wongoo/aliwepaystat/
+GOBIN=$(pwd) go get github.com/wongoo/aliwepaystat/cmd/aliwepaystat
 ```
+
+## 2. 账单导出方式
+- 微信支付账单导出: https://jingyan.baidu.com/article/95c9d20d04e8f8ec4e756182.html
+- 支付宝账单导出: https://jingyan.baidu.com/article/00a07f38540b2782d028dc17.html
+
+将以上下载的账单导出后解压到此账单目录，结构形如:
+```
+~  /Users/wongoo/aliwepaystat > tree
+├── aliwepaystat            <--- 统计程序, windows下为aliwepaystat.exe
+├── config.properties       <--- 交易分类配置文件
+├── alipay_husband.csv      <--- 老公支付宝账单文件
+├── alipay_wife.csv         <--- 老婆支付宝账单文件
+├── 微信支付账单-husband.csv  <--- 老公微信账单文件
+├── 微信支付账单-wife.csv     <--- 老婆微信账单文件
+```
+> 注意：支付宝的账单文件名以`alipay`开头, 微信账单文件名以`微信`开头。
+
+
+## 3. 开始统计
+
+点击执行 aliwepaystat 开始统计， 
+统计结果位于账单目录的 stat 子目录下，点击打开 aliwepaystat-index.html 即可看到统计结果。
