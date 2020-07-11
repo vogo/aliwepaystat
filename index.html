@@ -48,12 +48,12 @@
         {{end}}
 
     </table>
-
+    <div class="noprint">
         <h2>查看明细</h2>
     {{range $yearMonth := $.yearMonths}}
         <a href="aliwepaystat-{{$yearMonth}}.html" target="stat_detail">{{$yearMonth}}</a>
     {{end}}
-
-    <iframe name="stat_detail" style="width: 100%; height: 100%; min-height: 800px;border:0px; ">
+    </div>
+    <iframe name="stat_detail" style="width: 100%; height: 100%; min-height: 800px;border:0px; " class="noprint">
     </iframe>
 {{ end }}

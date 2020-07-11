@@ -18,9 +18,15 @@ var Files = map[string]string{
             tr:nth-child(odd){background-color:#FFE4C4;}
             tr:nth-child(even){background-color:#F0F0F0;}
             th{background-color: #0088ff;color:#FFF;}
+            @media print{
+                .noprint{display:none}
+            }
         </style>
     </head>
     <body>
+    <div style="position: absolute; top:0;right:0;" class="noprint">
+        <button onclick="window.print()">print</button>
+    </div>
     <div class="container">
         {{ template "content" . }}
     </div>
@@ -78,13 +84,13 @@ var Files = map[string]string{
         {{end}}
 
     </table>
-
+    <div class="noprint">
         <h2>查看明细</h2>
     {{range $yearMonth := $.yearMonths}}
         <a href="aliwepaystat-{{$yearMonth}}.html" target="stat_detail">{{$yearMonth}}</a>
     {{end}}
-
-    <iframe name="stat_detail" style="width: 100%; height: 100%; min-height: 800px;border:0px; ">
+    </div>
+    <iframe name="stat_detail" style="width: 100%; height: 100%; min-height: 800px;border:0px; " class="noprint">
     </iframe>
 {{ end }}
 `,
