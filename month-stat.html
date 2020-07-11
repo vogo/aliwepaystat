@@ -1,4 +1,5 @@
 {{ define "trans_list_table"}}
+    {{if gt (len $.TransList) 0 }}
     <table class="table">
         <tr>
             <th>时间</th>
@@ -17,6 +18,7 @@
             {{end}}
         {{end}}
     </table>
+    {{end}}
 {{ end }}
 
 {{ define "content" }}
@@ -25,57 +27,57 @@
     <hr>
     <h2>1. 收入</h2>
 
-    <h3>2.1 转账收入明细</h3>
+    <h3>2.1 转账收入明细 ({{$.IncomeTransfer.FormatTotal}})</h3>
     {{ template "trans_list_table" $.IncomeTransfer }}
 
-    <h3>1.2 其他收入明细</h3>
+    <h3>1.2 其他收入明细 ({{$.Income.FormatTotal}})</h3>
     {{ template "trans_list_table" $.Income }}
 
     <hr>
-    <h2>2. 投资</h2>
+    <h2>2. 投资 ({{$.Investment.FormatTotal}})</h2>
     {{ template "trans_list_table" $.Investment }}
 
     <hr>
     <h2>3. 贷款</h2>
-    <h3>3.1 贷款明细</h3>
+    <h3>3.1 贷款明细 ({{$.Loan.FormatTotal}})</h3>
     {{ template "trans_list_table" $.Loan }}
 
-    <h3>3.2 贷款还款明细</h3>
+    <h3>3.2 贷款还款明细 ({{$.LoanRepayment.FormatTotal}})</h3>
     {{ template "trans_list_table" $.LoanRepayment }}
 
     <hr>
     <h2>4. 支出</h2>
-    <h3>4.1 信用还款明细</h3>
+    <h3>4.1 信用还款明细 ({{$.CreditRepayment.FormatTotal}})</h3>
     {{ template "trans_list_table" $.CreditRepayment }}
 
-    <h3>4.2 交通明细</h3>
+    <h3>4.2 交通明细 ({{$.ExpenseTravel.FormatTotal}})</h3>
     {{ template "trans_list_table" $.ExpenseTravel }}
 
-    <h3>4.3 餐饮明细</h3>
+    <h3>4.3 餐饮明细 ({{$.ExpenseEat.FormatTotal}})</h3>
     {{ template "trans_list_table" $.ExpenseEat }}
 
-    <h3>4.4 水电明细</h3>
+    <h3>4.4 水电明细 ({{$.ExpenseWaterElectGas.FormatTotal}})</h3>
     {{ template "trans_list_table" $.ExpenseWaterElectGas }}
 
-    <h3>4.5 话费明细</h3>
+    <h3>4.5 话费明细 ({{$.ExpenseTel.FormatTotal}})</h3>
     {{ template "trans_list_table" $.ExpenseTel }}
 
-    <h3>4.6 其他明细</h3>
+    <h3>4.6 其他明细 ({{$.ExpenseOther.FormatTotal}})</h3>
     {{ template "trans_list_table" $.ExpenseOther }}
 
     <hr>
     <h2>6. 转账收支</h2>
 
-    <h3>5.1 转账收入明细</h3>
+    <h3>5.1 转账收入明细 ({{$.IncomeTransfer.FormatTotal}})</h3>
     {{ template "trans_list_table" $.IncomeTransfer }}
 
-    <h3>5.2 转账支出明细</h3>
+    <h3>5.2 转账支出明细 ({{$.ExpenseTransfer.FormatTotal}})</h3>
     {{ template "trans_list_table" $.ExpenseTransfer }}
 
     <hr>
     <h2>6. 其他</h2>
 
-    <h3>6.1 内部转账明细</h3>
+    <h3>6.1 内部转账明细 ({{$.InnerTransfer.FormatTotal}})</h3>
     {{ template "trans_list_table" $.InnerTransfer }}
 
 {{ end }}
