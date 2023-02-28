@@ -1,4 +1,4 @@
-// Copyright 2019 wongoo. All rights reserved.
+// Copyright 2019 vogo. All rights reserved.
 
 package aliwepaystat
 
@@ -16,7 +16,7 @@ const (
 	WechatCsvFieldNum = 11
 )
 
-//WechatTrans Wechat transaction
+// WechatTrans Wechat transaction
 type WechatTrans struct {
 	CreatedTime string `csv:"created_time"`
 	Type        string `csv:"type"`

@@ -1,4 +1,4 @@
-// Copyright 2019 wongoo. All rights reserved.
+// Copyright 2019 vogo. All rights reserved.
 
 package aliwepaystat
 
@@ -12,7 +12,7 @@ const (
 	AlipayCsvFieldNum = 17
 )
 
-//AlipayTrans alipay transaction
+// AlipayTrans alipay transaction
 type AlipayTrans struct {
 	ID           string  `csv:"id"`
 	OrderID      string  `csv:"order_id"`

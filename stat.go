@@ -1,4 +1,4 @@
-// Copyright 2019 wongoo. All rights reserved.
+// Copyright 2019 vogo. All rights reserved.
 
 package aliwepaystat
 
@@ -7,7 +7,6 @@ import (
 	"bytes"
 	"encoding/csv"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -48,7 +47,7 @@ func GenHtmlStat(statDir string) {
 }
 
 func ParseCsvTransDir(baseDir string) {
-	files, err := ioutil.ReadDir(baseDir)
+	files, err := os.ReadDir(baseDir)
 	if err != nil {
 		log.Fatalf("读取目录失败! %v", err)
 	}

@@ -6,7 +6,7 @@
 
 ### 创建一个账单目录
 
-比如 `/Users/wongoo/aliwepaystat`。
+比如 `/Users/vogo/aliwepaystat`。
 
 ### 自定义配置文件
 
@@ -32,11 +32,11 @@ list.min.amount=10.0
 
 下载统计工具并解压到账单目录中。
 
-下载地址: https://github.com/wongoo/aliwepaystat/releases
+下载地址: https://github.com/vogo/aliwepaystat/releases
 
 另外可以自己编译生成工具，在账单目录中执行以下命令编译安装:
 ```bash
-GOBIN=$(pwd) go get github.com/wongoo/aliwepaystat/cmd/aliwepaystat
+GOBIN=$(pwd) go get github.com/vogo/aliwepaystat/cmd/aliwepaystat
 ```
 
 ## 2. 账单导出方式
@@ -45,7 +45,7 @@ GOBIN=$(pwd) go get github.com/wongoo/aliwepaystat/cmd/aliwepaystat
 
 将以上下载的账单导出后解压到此账单目录，结构形如:
 ```
-~  /Users/wongoo/aliwepaystat > tree
+~  /Users/vogo/aliwepaystat > tree
 ├── aliwepaystat            <--- 统计程序, windows下为aliwepaystat.exe
 ├── config.properties       <--- 交易分类配置文件
 ├── alipay_husband.csv      <--- 老公支付宝账单文件

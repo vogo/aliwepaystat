@@ -1,4 +1,4 @@
-// Copyright 2019 wongoo. All rights reserved.
+// Copyright 2019 vogo. All rights reserved.
 
 package aliwepaystat
 

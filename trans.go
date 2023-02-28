@@ -1,10 +1,10 @@
-// Copyright 2019 wongoo. All rights reserved.
+// Copyright 2019 vogo. All rights reserved.
 
 package aliwepaystat
 
 import "golang.org/x/text/encoding"
 
-//Trans transaction
+// Trans transaction
 type Trans interface {
 	IsIncome() bool
 	IsInnerTransfer() bool

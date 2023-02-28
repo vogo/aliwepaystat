@@ -1,4 +1,4 @@
-version := v1.1.0
+version := v1.2.0
 
 format:
 		goimports -w -l .
@@ -10,10 +10,7 @@ check:
 test:
 		go test
 
-static:
-	go run makestatic/makestatic.go
-
-build: format check test static
+build: format check test
 	rm -f dist/*.zip
 	cd dist && GOOS=linux go build ../cmd/aliwepaystat/aliwepaystat.go && zip aliwepaystat-$(version)-linux.zip aliwepaystat && rm -f aliwepaystat
 	cd dist && GOOS=darwin go build ../cmd/aliwepaystat/aliwepaystat.go && zip aliwepaystat-$(version)-mac.zip aliwepaystat && rm -f aliwepaystat

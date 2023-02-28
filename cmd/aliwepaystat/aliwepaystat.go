@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/wongoo/aliwepaystat"
+	"github.com/vogo/aliwepaystat"
 )
 
 func main() {
