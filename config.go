@@ -31,7 +31,7 @@ var (
 		LoanKeyWords:          []string{"放款"},
 		TransferKeyWords:      []string{"转账"},
 		InnerTransferKeyWords: []string{"余额宝-自动转入", "网商银行转入", "余额宝-转出到余额", "转出到网商银行"},
-		IncomeKeyWords:        []string{"收入", "红包奖励发放", "收益发放", "奖励", "退款", "收款", "Collection Bill"},
+		IncomeKeyWords:        []string{"收入", "红包奖励发放", "收益发放", "奖励", "退款", "Collection Bill"},
 		RepaymentKeyWords:     []string{"还款"},
 		LoanRepaymentKeyWords: []string{"蚂蚁借呗还款"},
 		EatKeyWords: []string{"美团", "饿了么", "口碑", "外卖", "菜", "餐饮", "美食", "饭", "超市", "汉堡", "安德鲁森",

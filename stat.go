@@ -91,29 +91,29 @@ func ParseCsvTransFile(filePath string, parser TransParser) {
 	dataLineStarted := false
 	// loop read the previous content until the csv title
 	for {
-		bytes, _, err := reader.ReadLine()
+		lineData, _, err := reader.ReadLine()
 		if err != nil {
 			if err == io.EOF {
 				break
 			}
 			log.Fatalf("读取文件错误! %v", err)
 		}
-		if len(bytes) == 0 {
+		if len(lineData) == 0 {
 			continue
 		}
 		if dataLineStarted {
-			bytes = replaceCsvLineFieldsSuffixBlank(bytes)
-			line := string(bytes)
+			lineData = replaceCsvLineFieldsSuffixBlank(lineData)
+			line := string(lineData)
 			if len(strings.Split(line, ",")) != parser.FieldNum() {
 				// ignore none data line
 				printDataDescLine(line)
 				continue
 			}
-			buf.Write(bytes)
+			buf.Write(lineData)
 			buf.WriteByte('\n')
 			continue
 		}
-		line := string(bytes)
+		line := string(lineData)
 		line = strings.ReplaceAll(line, " ", "")
 		if line == parser.CsvHeader() {
 			dataLineStarted = true

@@ -35,7 +35,7 @@ func main() {
 	}
 	if configPath != "" {
 		log.Println("配置文件:", configPath)
-		aliwepaystat.ParseConfig(*configFilePath)
+		aliwepaystat.ParseConfig(configPath)
 	}
 
 	log.Println("统计输入目录:", baseDir)
