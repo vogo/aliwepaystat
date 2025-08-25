@@ -3,22 +3,22 @@
 package aliwepaystat
 
 type MonthStat struct {
-	TransMap             map[string]Trans
-	YearMonth            string
-	Investment           *TransGroup
-	InnerTransfer        *TransGroup
-	Income               *TransGroup
-	IncomeTransfer       *TransGroup
-	Loan                 *TransGroup
-	LoanRepayment        *TransGroup
-	CreditRepayment      *TransGroup
-	ExpenseTotal         float64
-	ExpenseTransfer      *TransGroup
-	ExpenseTravel        *TransGroup
-	ExpenseEat           *TransGroup
-	ExpenseWaterElectGas *TransGroup
-	ExpenseTel           *TransGroup
-	ExpenseOther         *TransGroup
+	TransMap             map[string]Trans `json:"trans_map" csv:"trans_map" comment:"交易记录"`
+	YearMonth            string           `json:"year_month" csv:"year_month" comment:"年月"`
+	Investment           *TransGroup      `json:"investment" csv:"investment" comment:"投资"`
+	InnerTransfer        *TransGroup      `json:"inner_transfer" csv:"inner_transfer" comment:"内部转账"`
+	Income               *TransGroup      `json:"income" csv:"income" comment:"收入"`
+	IncomeTransfer       *TransGroup      `json:"income_transfer" csv:"income_transfer" comment:"收入转账"`
+	Loan                 *TransGroup      `json:"loan" csv:"loan" comment:"贷款"`
+	LoanRepayment        *TransGroup      `json:"loan_repayment" csv:"loan_repayment" comment:"贷款还款"`
+	CreditRepayment      *TransGroup      `json:"credit_repayment" csv:"credit_repayment" comment:"信用还款"`
+	ExpenseTotal         float64          `json:"expense_total" csv:"expense_total" comment:"支出"`
+	ExpenseTransfer      *TransGroup      `json:"expense_transfer" csv:"expense_transfer" comment:"支出转账"`
+	ExpenseTravel        *TransGroup      `json:"expense_travel" csv:"expense_travel" comment:"支出旅行"`
+	ExpenseEat           *TransGroup      `json:"expense_eat" csv:"expense_eat" comment:"支出就餐"`
+	ExpenseWaterElectGas *TransGroup      `json:"expense_water_elect_gas" csv:"expense_water_elect_gas" comment:"支出水电 gas"`
+	ExpenseTel           *TransGroup      `json:"expense_tel" csv:"expense_tel" comment:"支出电话"`
+	ExpenseOther         *TransGroup      `json:"expense_other" csv:"expense_other" comment:"支出其他"`
 }
 
 func (ms *MonthStat) FormatExpenseTotal() float64 {

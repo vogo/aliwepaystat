@@ -18,19 +18,19 @@ const (
 
 // WechatTrans Wechat transaction
 type WechatTrans struct {
-	CreatedTime string `csv:"created_time"`
-	Type        string `csv:"type"`
-	Target      string `csv:"target"`
-	Product     string `csv:"product"`
-	FinType     string `csv:"fin_type"`
-	Amount      string `csv:"amount"`
-	amt         float64
-	Source      string `csv:"source"`
-	Status      string `csv:"status"`
-	ID          string `csv:"id"`
-	OrderID     string `csv:"order_id"`
-	Comment     string `csv:"comment"`
-	refund      float64
+	CreatedTime string  `json:"created_time" csv:"created_time" comment:"交易时间"`
+	Type        string  `json:"type" csv:"type" comment:"交易类型"`
+	Target      string  `json:"target" csv:"target" comment:"交易对方"`
+	Product     string  `json:"product" csv:"product" comment:"商品"`
+	FinType     string  `json:"fin_type" csv:"fin_type" comment:"收/支"`
+	Amount      string  `json:"amount" csv:"amount" comment:"金额"`
+	Amt         float64 `json:"amt" comment:"金额"`
+	Source      string  `json:"source" csv:"source" comment:"支付方式"`
+	Status      string  `json:"status" csv:"status" comment:"当前状态"`
+	ID          string  `json:"id" csv:"id" comment:"交易单号"`
+	OrderID     string  `json:"order_id" csv:"order_id" comment:"商户单号"`
+	Comment     string  `json:"comment" csv:"comment" comment:"备注"`
+	Refund      float64 `json:"refund" comment:"退款金额"`
 }
 
 func (t *WechatTrans) IsIncome() bool {
@@ -65,14 +65,14 @@ func (t *WechatTrans) GetType() string        { return t.Type }
 func (t *WechatTrans) GetTarget() string      { return t.Target }
 func (t *WechatTrans) GetProduct() string     { return t.Product }
 func (t *WechatTrans) GetAmount() float64 {
-	if t.amt == 0 && t.Amount != "" {
+	if t.Amt == 0 && t.Amount != "" {
 		var err error
-		t.amt, err = strconv.ParseFloat(strings.ReplaceAll(t.Amount, "¥", ""), 32)
+		t.Amt, err = strconv.ParseFloat(strings.ReplaceAll(t.Amount, "¥", ""), 32)
 		if err != nil {
 			log.Fatalf("无法解析金额: %v", t.Amount)
 		}
 	}
-	return t.amt
+	return t.Amt
 }
 
 func (t *WechatTrans) GetFormatAmount() float64 {
@@ -81,7 +81,7 @@ func (t *WechatTrans) GetFormatAmount() float64 {
 
 func (t *WechatTrans) GetFinType() string { return t.FinType }
 func (t *WechatTrans) GetStatus() string  { return t.Status }
-func (t *WechatTrans) GetRefund() float64 { return t.refund }
+func (t *WechatTrans) GetRefund() float64 { return t.Refund }
 func (t *WechatTrans) GetComment() string { return t.Comment }
 func (t *WechatTrans) IsShowInList() bool { return t.GetAmount() > cfg.ListMinAmount }
 

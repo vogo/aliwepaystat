@@ -14,23 +14,23 @@ const (
 
 // AlipayTrans alipay transaction
 type AlipayTrans struct {
-	ID           string  `csv:"id"`
-	OrderID      string  `csv:"order_id"`
-	CreatedTime  string  `csv:"created_time"`
-	PaidTime     string  `csv:"paid_time"`
-	ModifiedTime string  `csv:"modified_time"`
-	Source       string  `csv:"source"`
-	Type         string  `csv:"type"`
-	Target       string  `csv:"target"`
-	Product      string  `csv:"product"`
-	Amount       float64 `csv:"amount"`
-	FinType      string  `csv:"fin_type"`
-	Status       string  `csv:"status"`
-	Charge       float64 `csv:"charge"`
-	Refund       float64 `csv:"refund"`
-	Comment      string  `csv:"comment"`
-	FundStatus   string  `csv:"fund_status"`
-	Other        string  `csv:"other"`
+	ID           string  `json:"id" csv:"id" comment:"交易单号"`
+	OrderID      string  `json:"order_id" csv:"order_id" comment:"商户单号"`
+	CreatedTime  string  `json:"created_time" csv:"created_time" comment:"交易创建时间"`
+	PaidTime     string  `json:"paid_time" csv:"paid_time" comment:"付款时间"`
+	ModifiedTime string  `json:"modified_time" csv:"modified_time" comment:"最近修改时间"`
+	Source       string  `json:"source" csv:"source" comment:"交易来源地"`
+	Type         string  `json:"type" csv:"type" comment:"类型"`
+	Target       string  `json:"target" csv:"target" comment:"交易对方"`
+	Product      string  `json:"product" csv:"product" comment:"商品名称"`
+	Amount       float64 `json:"amount" csv:"amount" comment:"金额"`
+	FinType      string  `json:"fin_type" csv:"fin_type" comment:"收/支"`
+	Status       string  `json:"status" csv:"status" comment:"交易状态"`
+	Charge       float64 `json:"charge" csv:"charge" comment:"服务费（元）"`
+	Refund       float64 `json:"refund" csv:"refund" comment:"成功退款（元）"`
+	Comment      string  `json:"comment" csv:"comment" comment:"备注"`
+	FundStatus   string  `json:"fund_status" csv:"fund_status" comment:"资金状态"`
+	Other        string  `json:"other" csv:"other" comment:"其他"`
 }
 
 func (t *AlipayTrans) IsIncome() bool {
