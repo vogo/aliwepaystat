@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>配置管理 - 支付宝微信账单统计</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #333; text-align: center; margin-bottom: 30px; }
+        .nav { text-align: center; margin-bottom: 30px; }
+        .nav a { padding: 8px 16px; background: #6c757d; color: white; text-decoration: none; border-radius: 4px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, textarea { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        button { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>配置管理</h1>
+        <div class="nav">
+            <a href="/">返回首页</a>
+        </div>
+        <div class="form-group">
+            <label>收入关键词：</label>
+            <textarea id="income-keywords" rows="3" placeholder="请输入收入关键词，用逗号分隔"></textarea>
+        </div>
+        <div class="form-group">
+            <label>支出关键词：</label>
+            <textarea id="expense-keywords" rows="3" placeholder="请输入支出关键词，用逗号分隔"></textarea>
+        </div>
+        <div class="form-group">
+            <label>服务器端口：</label>
+            <input type="number" id="server-port" placeholder="0表示随机端口">
+        </div>
+        <div class="form-group">
+            <button onclick="saveConfig()">保存配置</button>
+            <button onclick="loadConfig()" style="margin-left: 10px; background: #6c757d;">加载配置</button>
+        </div>
+    </div>
+    
+    <script>
+        function loadConfig() {
+            fetch('/api/config')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('income-keywords').value = data['income.keywords'] || '';
+                    document.getElementById('expense-keywords').value = data['expense.keywords'] || '';
+                    document.getElementById('server-port').value = data['server.port'] || '0';
+                })
+                .catch(error => alert('加载配置失败: ' + error));
+        }
+        
+        function saveConfig() {
+            const configs = [
+                { key: 'income.keywords', value: document.getElementById('income-keywords').value },
+                { key: 'expense.keywords', value: document.getElementById('expense-keywords').value },
+                { key: 'server.port', value: document.getElementById('server-port').value }
+            ];
+            
+            Promise.all(configs.map(config => 
+                fetch('/api/config', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(config)
+                })
+            )).then(() => {
+                alert('配置保存成功！');
+            }).catch(error => {
+                alert('保存配置失败: ' + error);
+            });
+        }
+        
+        // 页面加载时自动加载配置
+        window.onload = loadConfig;
+    </script>
+</body>
+</html>
