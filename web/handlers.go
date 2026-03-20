@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
+	"io"
 	"net/http"
 	"strconv"
 	"strings"
@@ -132,19 +133,17 @@ func (s *Server) handleUpload(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 读取文件内容
-	content := make([]byte, header.Size)
-	_, err = file.Read(content)
+	content, err := io.ReadAll(file)
 	if err != nil {
 		http.Error(w, "读取文件失败", http.StatusInternalServerError)
 		return
 	}
 
 	// 根据平台选择解析器
-	var parser aliwepaystat.TransParser
-	if platform == "alipay" {
-		parser = aliwepaystat.TransParserAlipay
-	} else {
-		parser = aliwepaystat.TransParserWechat
+	parser, err := aliwepaystat.ParserForPlatform(platform)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("无效的平台类型: %v", err), http.StatusBadRequest)
+		return
 	}
 
 	// 解析并导入CSV

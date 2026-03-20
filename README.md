@@ -22,18 +22,16 @@ go build ./cmd/aliwepaystat/
 - 微信支付账单导出: https://jingyan.baidu.com/article/95c9d20d04e8f8ec4e756182.html
 - 支付宝账单导出: https://jingyan.baidu.com/article/00a07f38540b2782d028dc17.html
 
-> 注意：支付宝的账单文件名需以 `alipay` 开头，微信账单文件名需以 `微信` 开头。
-
 ## 3. 导入数据库
 
-将 CSV 账单文件导入 SQLite 数据库：
+将 CSV 账单文件导入 SQLite 数据库，需通过 `-t` 参数指定平台类型：
 
 ```bash
-# 导入单个文件
-aliwepaystat import alipay_202503.csv
+# 导入支付宝账单
+aliwepaystat import -t alipay /path/to/alipay_202503.csv
 
-# 导入目录下所有 CSV 文件
-aliwepaystat import /path/to/csv/dir/
+# 导入微信支付账单
+aliwepaystat import -t wechat ./微信支付账单.csv
 ```
 
 导入完成后，所有后续操作都基于数据库，原始 CSV 文件可自行归档。
@@ -84,8 +82,6 @@ aliwepaystat config list
 # 设置数据库路径
 aliwepaystat config set db /path/to/data.db
 
-# 设置默认导入目录
-aliwepaystat config set dir /path/to/csv/dir/
 ```
 
 ## 完整用法
@@ -95,7 +91,7 @@ aliwepaystat [-c <config-path>] [--json] <command> [args...]
 
 Commands:
   config    管理应用配置
-  import    导入 CSV 账单文件到数据库
+  import    导入 CSV 账单文件到数据库 (import -t <alipay|wechat> <file>)
   query     查询交易数据和统计
   web       启动 Web 界面
   help      显示帮助信息

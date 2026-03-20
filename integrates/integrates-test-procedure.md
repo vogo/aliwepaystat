@@ -28,7 +28,7 @@
 3. 启动整合流程：
    - 初始化 SQLite 数据库（`OpenDB` + `EnsureSchema`）。
    - 加载已存在交易 `id`（`LoadExistingIDs`）。
-   - 导入 CSV 到数据库（`ImportCsvToDB`）。
+   - 导入 CSV 到数据库（`ImportFileToDBWithResult`）。
    - 从数据库构建统计（`BuildStatsFromDB`）。
    - 生成报表（`GenHtmlStat`，输出到 `stat/`）。
 4. 校验输出：

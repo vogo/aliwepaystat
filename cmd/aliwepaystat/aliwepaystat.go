@@ -22,8 +22,7 @@ func main() {
 				configPath = args[i+1]
 				i++
 			} else {
-				fmt.Fprintln(os.Stderr, "Error: -c requires a path argument")
-				os.Exit(2)
+				mainError("-c 缺少配置文件路径参数")
 			}
 		case "--json":
 			jsonOutput = true
@@ -37,8 +36,7 @@ func main() {
 	}
 
 	if len(subArgs) == 0 {
-		printUsage()
-		os.Exit(2)
+		mainError("缺少命令")
 	}
 
 	subcommand := subArgs[0]
@@ -90,23 +88,28 @@ func main() {
 	case "web":
 		runWeb(ctx, cmdArgs)
 	default:
-		fmt.Fprintf(os.Stderr, "Unknown command: %s\n", subcommand)
-		printUsage()
-		os.Exit(2)
+		mainError(fmt.Sprintf("未知命令: %s", subcommand))
 	}
 }
 
+const mainUsage = `用法: aliwepaystat [-c <config-path>] [--json] <command> [args...]
+
+命令:
+  config    管理应用配置
+  import    导入 CSV 账单文件 (import -t <alipay|wechat> <file>)
+  query     查询交易数据和统计
+  web       启动 Web 界面
+  help      显示帮助信息
+
+全局参数:
+  -c <path>   配置文件路径 (默认: ~/.aliwepaystat.conf)
+  --json      以 JSON 格式输出`
+
+func mainError(msg string) {
+	fmt.Fprintf(os.Stderr, "Error: %s\n\n%s\n", msg, mainUsage)
+	os.Exit(2)
+}
+
 func printUsage() {
-	fmt.Fprintln(os.Stderr, `Usage: aliwepaystat [-c <config-path>] [--json] <command> [args...]
-
-Commands:
-  config    Manage global configuration
-  import    Import CSV transaction files
-  query     Query transaction data and statistics
-  web       Start the web UI server
-  help      Show this help message
-
-Global Flags:
-  -c <path>   Path to config file (default: ~/.aliwepaystat.conf)
-  --json      Output in JSON format (for config, import, query commands)`)
+	fmt.Fprintln(os.Stderr, mainUsage)
 }
