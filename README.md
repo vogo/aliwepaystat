@@ -55,7 +55,7 @@ aliwepaystat query transactions --month 202503
 aliwepaystat query transactions --month 202503 --category 美团
 
 # JSON 格式输出
-aliwepaystat --json query stats
+aliwepaystat query stats --json
 ```
 
 ## 5. Web 界面
@@ -87,7 +87,7 @@ aliwepaystat config set db /path/to/data.db
 ## 完整用法
 
 ```
-aliwepaystat [-c <config-path>] [--json] <command> [args...]
+aliwepaystat [-c <config-path>] <command> [args...] [--json]
 
 Commands:
   config    管理应用配置

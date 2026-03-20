@@ -9,10 +9,10 @@ import (
 )
 
 func main() {
-	// Parse global flags manually before subcommand
+	// First pass: extract global flags (--json, -c) from anywhere in args
 	configPath := ""
 	jsonOutput := false
-	var subArgs []string
+	var remaining []string
 
 	args := os.Args[1:]
 	for i := 0; i < len(args); i++ {
@@ -27,13 +27,11 @@ func main() {
 		case "--json":
 			jsonOutput = true
 		default:
-			// First non-flag argument is the subcommand
-			subArgs = args[i:]
-		}
-		if len(subArgs) > 0 {
-			break
+			remaining = append(remaining, args[i])
 		}
 	}
+
+	subArgs := remaining
 
 	if len(subArgs) == 0 {
 		mainError("缺少命令")
@@ -92,7 +90,7 @@ func main() {
 	}
 }
 
-const mainUsage = `用法: aliwepaystat [-c <config-path>] [--json] <command> [args...]
+const mainUsage = `用法: aliwepaystat [-c <config-path>] <command> [args...] [--json]
 
 命令:
   config    管理应用配置
@@ -103,7 +101,7 @@ const mainUsage = `用法: aliwepaystat [-c <config-path>] [--json] <command> [a
 
 全局参数:
   -c <path>   配置文件路径 (默认: ~/.aliwepaystat.conf)
-  --json      以 JSON 格式输出`
+  --json      以 JSON 格式输出（可放在任意位置）`
 
 func mainError(msg string) {
 	fmt.Fprintf(os.Stderr, "Error: %s\n\n%s\n", msg, mainUsage)
