@@ -78,7 +78,7 @@ func ParseCsvTransFile(filePath string, parser TransParser) {
 	if err != nil {
 		log.Fatalf("打开文件错误! %v", err)
 	}
-	defer file.Close()
+	defer func() { _ = file.Close() }()
 	transHeader, err := csvutil.Header(parser.NewTrans(), "csv")
 	if err != nil {
 		log.Fatalf("程序错误! %v", err)

@@ -108,9 +108,9 @@ func (s *Server) Start() error {
 	if err != nil {
 		portStr = "0" // 默认随机端口
 	}
-	
+
 	configPort, _ := strconv.Atoi(portStr)
-	
+
 	// 如果配置为0，则使用随机端口
 	if configPort == 0 {
 		listener, err := net.Listen("tcp", ":0")
@@ -118,7 +118,7 @@ func (s *Server) Start() error {
 			return fmt.Errorf("failed to get random port: %w", err)
 		}
 		s.port = listener.Addr().(*net.TCPAddr).Port
-		listener.Close()
+		_ = listener.Close()
 	} else {
 		s.port = configPort
 	}

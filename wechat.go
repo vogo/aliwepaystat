@@ -106,5 +106,5 @@ func (p *wechatTransParser) Enc() encoding.Encoding {
 var TransParserWechat = &wechatTransParser{}
 
 func IsWechatGroupAAExpense(trans Trans) bool {
-    return trans.GetType() == "群收款" && trans.GetFinType() == "支出"
+	return trans.GetType() == "群收款" && trans.GetFinType() == "支出"
 }

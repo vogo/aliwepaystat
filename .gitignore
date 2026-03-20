@@ -1,8 +1,12 @@
 .idea
+.vscode
+.claude
+CLAUDE.md
+
 
 myconfig.properties
 
 aliwepaystat
 aliwepaystat.db
-
+coverage.out
 dist

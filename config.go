@@ -91,7 +91,7 @@ func readProperties(filename string) ConfigProperties {
 		log.Fatal(err)
 		return nil
 	}
-	defer file.Close()
+	defer func() { _ = file.Close() }()
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {

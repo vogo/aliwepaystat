@@ -33,8 +33,8 @@ func (c *ConfigManager) GetAllConfig() (map[string]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
-	
+	defer func() { _ = rows.Close() }()
+
 	configs := make(map[string]string)
 	for rows.Next() {
 		var key, value string
@@ -43,6 +43,6 @@ func (c *ConfigManager) GetAllConfig() (map[string]string, error) {
 		}
 		configs[key] = value
 	}
-	
+
 	return configs, nil
 }

@@ -43,7 +43,7 @@ func init() {
 	indexStatTemplate = templateParse("index.html", indexTemplateData)
 }
 
-func genMonthStatReport(wr io.Writer, data interface{}) {
+func genMonthStatReport(wr io.Writer, data any) {
 	err := monthStatTemplate.ExecuteTemplate(wr, "layout", data)
 	if err != nil {
 		log.Printf("The template layout exec error:%v", err)
@@ -51,7 +51,7 @@ func genMonthStatReport(wr io.Writer, data interface{}) {
 }
 
 func genIndexStatReport(wr io.Writer) {
-	data := make(map[string]interface{})
+	data := make(map[string]any)
 	data["yearMonths"] = yearMonths
 	data["monthStatsMap"] = monthStatsMap
 
