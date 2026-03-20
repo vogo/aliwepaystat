@@ -7,16 +7,10 @@ import (
 	"encoding/csv"
 	"fmt"
 	"io"
-	"regexp"
 	"strings"
 
-	"github.com/jszwec/csvutil"
 	"github.com/vogo/aliwepaystat"
 	"golang.org/x/text/transform"
-)
-
-var (
-	regexCsvLineFieldsSuffixBlank, _ = regexp.Compile("[ ]+,")
 )
 
 // CSVParser CSV解析器
@@ -33,12 +27,6 @@ func NewCSVParser(db *sql.DB) *CSVParser {
 func (p *CSVParser) ParseAndImportCSV(content []byte, parser aliwepaystat.TransParser, platform string) (int, error) {
 	// 获取现有的交易ID以避免重复导入
 	existingIDs := aliwepaystat.LoadExistingIDs(p.db)
-
-	// 获取交易结构的CSV头部信息
-	transHeader, err := csvutil.Header(parser.NewTrans(), "csv")
-	if err != nil {
-		return 0, fmt.Errorf("获取CSV头部失败: %v", err)
-	}
 
 	// 创建编码转换器
 	transformReader := transform.NewReader(bytes.NewReader(content), parser.Enc().NewDecoder())
@@ -63,7 +51,7 @@ func (p *CSVParser) ParseAndImportCSV(content []byte, parser aliwepaystat.TransP
 
 		if dataLineStarted {
 			// 处理数据行
-			lineData = replaceCsvLineFieldsSuffixBlank(lineData)
+			lineData = aliwepaystat.ReplaceCsvLineFieldsSuffixBlank(lineData)
 			line := string(lineData)
 			if len(strings.Split(line, ",")) != parser.FieldNum() {
 				continue // 跳过格式不正确的行
@@ -87,17 +75,17 @@ func (p *CSVParser) ParseAndImportCSV(content []byte, parser aliwepaystat.TransP
 	csvReader := csv.NewReader(formattedReader)
 	csvReader.TrimLeadingSpace = true
 
-	dec, err := csvutil.NewDecoder(csvReader, transHeader...)
-	if err != nil {
-		return 0, fmt.Errorf("创建CSV解析器失败: %v", err)
-	}
-
 	count := 0
 	for {
-		trans := parser.NewTrans()
-		if err := dec.Decode(trans); err == io.EOF {
+		fields, err := csvReader.Read()
+		if err == io.EOF {
 			break
-		} else if err != nil {
+		}
+		if err != nil {
+			continue // 跳过解析失败的行
+		}
+		trans, err := parser.ParseRow(fields)
+		if err != nil {
 			continue // 跳过解析失败的行
 		}
 
@@ -118,9 +106,4 @@ func (p *CSVParser) ParseAndImportCSV(content []byte, parser aliwepaystat.TransP
 	}
 
 	return count, nil
-}
-
-// replaceCsvLineFieldsSuffixBlank 替换CSV行字段后缀空白
-func replaceCsvLineFieldsSuffixBlank(lineData []byte) []byte {
-	return regexCsvLineFieldsSuffixBlank.ReplaceAll(lineData, []byte{','})
 }

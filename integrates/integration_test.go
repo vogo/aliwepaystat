@@ -3,6 +3,7 @@ package aliwepaystat_test
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	aws "github.com/vogo/aliwepaystat"
@@ -60,23 +61,7 @@ func Test_Integrates_WechatCSV_To_SQLite_To_HTML(t *testing.T) {
 	if err != nil {
 		t.Fatalf("month stat not generated: %v", err)
 	}
-	if !containsString(string(bys), "202409 收支统计报告") {
+	if !strings.Contains(string(bys), "202409 收支统计报告") {
 		t.Fatalf("month stat content unexpected: %s", ymFile)
 	}
-}
-
-func containsString(s, sub string) bool { return len(s) >= len(sub) && (stringContains(s, sub)) }
-
-func stringContains(s, sub string) bool {
-	return indexOf(s, sub) >= 0
-}
-
-func indexOf(s, sub string) int {
-	// simple wrapper to avoid importing strings in test
-	for i := 0; i+len(sub) <= len(s); i++ {
-		if s[i:i+len(sub)] == sub {
-			return i
-		}
-	}
-	return -1
 }

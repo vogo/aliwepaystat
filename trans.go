@@ -33,6 +33,7 @@ type TransParser interface {
 	CsvHeader() string
 	FieldNum() int
 	Enc() encoding.Encoding
+	ParseRow(fields []string) (Trans, error)
 }
 
 type TransGroup struct {

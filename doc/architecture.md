@@ -162,7 +162,7 @@ CREATE INDEX idx_category_year_month ON category_stats(year_month, category);
   - 展示过滤：`Trans.IsShowInList` 依据 `list.min.amount` 控制。
 
 ## 关键依赖
-- `github.com/jszwec/csvutil`：CSV 到结构体的高效映射（基于标签）。
+- `encoding/csv`（标准库）：原生 CSV 解析，配合 `TransParser.ParseRow()` 将字段映射到结构体。
 - `golang.org/x/text/transform` + `encoding`：处理不同平台的文件编码（Alipay: `GBK`，Wechat: `UTF-8`）。
 - `database/sql` + `github.com/mattn/go-sqlite3`：SQLite 持久层实现。
 - 标准库：`flag`、`log`、`os`、`path/filepath`、`html/template`、`sort`、`bufio`、`encoding/csv` 等。

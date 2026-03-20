@@ -35,7 +35,7 @@ var (
 	regexCsvLineFieldsSuffixBlank, _ = regexp.Compile("[ ]+,")
 )
 
-func replaceCsvLineFieldsSuffixBlank(bytes []byte) []byte {
+func ReplaceCsvLineFieldsSuffixBlank(bytes []byte) []byte {
 	return regexCsvLineFieldsSuffixBlank.ReplaceAll(bytes, []byte{','})
 }
 

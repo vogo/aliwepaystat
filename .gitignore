@@ -10,3 +10,4 @@ aliwepaystat
 aliwepaystat.db
 coverage.out
 dist
+.autodev

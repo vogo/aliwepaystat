@@ -13,7 +13,6 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/jszwec/csvutil"
 	"golang.org/x/text/transform"
 )
 
@@ -79,10 +78,6 @@ func ParseCsvTransFile(filePath string, parser TransParser) {
 		log.Fatalf("打开文件错误! %v", err)
 	}
 	defer func() { _ = file.Close() }()
-	transHeader, err := csvutil.Header(parser.NewTrans(), "csv")
-	if err != nil {
-		log.Fatalf("程序错误! %v", err)
-	}
 	transformReader := transform.NewReader(file, parser.Enc().NewDecoder())
 	reader := bufio.NewReader(transformReader)
 
@@ -102,7 +97,7 @@ func ParseCsvTransFile(filePath string, parser TransParser) {
 			continue
 		}
 		if dataLineStarted {
-			lineData = replaceCsvLineFieldsSuffixBlank(lineData)
+			lineData = ReplaceCsvLineFieldsSuffixBlank(lineData)
 			line := string(lineData)
 			if len(strings.Split(line, ",")) != parser.FieldNum() {
 				// ignore none data line
@@ -127,15 +122,17 @@ func ParseCsvTransFile(filePath string, parser TransParser) {
 	csvReader.TrimLeadingSpace = true
 	csvReader.FieldsPerRecord = parser.FieldNum()
 
-	dec, err := csvutil.NewDecoder(csvReader, transHeader...)
-	if err != nil {
-		log.Fatalf("创建解析器失败! %v", err)
-	}
 	for {
-		trans := parser.NewTrans()
-		if err := dec.Decode(trans); err == io.EOF {
+		fields, err := csvReader.Read()
+		if err == io.EOF {
 			break
-		} else if err != nil {
+		}
+		if err != nil {
+			log.Printf("解析数据失败! %v", err)
+			continue
+		}
+		trans, err := parser.ParseRow(fields)
+		if err != nil {
 			log.Printf("解析数据失败! %v", err)
 			continue
 		}

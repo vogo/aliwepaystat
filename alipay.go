@@ -3,6 +3,9 @@
 package aliwepaystat
 
 import (
+	"fmt"
+	"strconv"
+
 	"golang.org/x/text/encoding"
 	"golang.org/x/text/encoding/simplifiedchinese"
 )
@@ -14,23 +17,23 @@ const (
 
 // AlipayTrans alipay transaction
 type AlipayTrans struct {
-	ID           string  `json:"id" csv:"id" comment:"交易单号"`
-	OrderID      string  `json:"order_id" csv:"order_id" comment:"商户单号"`
-	CreatedTime  string  `json:"created_time" csv:"created_time" comment:"交易创建时间"`
-	PaidTime     string  `json:"paid_time" csv:"paid_time" comment:"付款时间"`
-	ModifiedTime string  `json:"modified_time" csv:"modified_time" comment:"最近修改时间"`
-	Source       string  `json:"source" csv:"source" comment:"交易来源地"`
-	Type         string  `json:"type" csv:"type" comment:"类型"`
-	Target       string  `json:"target" csv:"target" comment:"交易对方"`
-	Product      string  `json:"product" csv:"product" comment:"商品名称"`
-	Amount       float64 `json:"amount" csv:"amount" comment:"金额"`
-	FinType      string  `json:"fin_type" csv:"fin_type" comment:"收/支"`
-	Status       string  `json:"status" csv:"status" comment:"交易状态"`
-	Charge       float64 `json:"charge" csv:"charge" comment:"服务费（元）"`
-	Refund       float64 `json:"refund" csv:"refund" comment:"成功退款（元）"`
-	Comment      string  `json:"comment" csv:"comment" comment:"备注"`
-	FundStatus   string  `json:"fund_status" csv:"fund_status" comment:"资金状态"`
-	Other        string  `json:"other" csv:"other" comment:"其他"`
+	ID           string  `json:"id" comment:"交易单号"`
+	OrderID      string  `json:"order_id" comment:"商户单号"`
+	CreatedTime  string  `json:"created_time" comment:"交易创建时间"`
+	PaidTime     string  `json:"paid_time" comment:"付款时间"`
+	ModifiedTime string  `json:"modified_time" comment:"最近修改时间"`
+	Source       string  `json:"source" comment:"交易来源地"`
+	Type         string  `json:"type" comment:"类型"`
+	Target       string  `json:"target" comment:"交易对方"`
+	Product      string  `json:"product" comment:"商品名称"`
+	Amount       float64 `json:"amount" comment:"金额"`
+	FinType      string  `json:"fin_type" comment:"收/支"`
+	Status       string  `json:"status" comment:"交易状态"`
+	Charge       float64 `json:"charge" comment:"服务费（元）"`
+	Refund       float64 `json:"refund" comment:"成功退款（元）"`
+	Comment      string  `json:"comment" comment:"备注"`
+	FundStatus   string  `json:"fund_status" comment:"资金状态"`
+	Other        string  `json:"other" comment:"其他"`
 }
 
 func (t *AlipayTrans) IsIncome() bool {
@@ -101,6 +104,39 @@ func (p *alipayTransParser) FieldNum() int {
 
 func (p *alipayTransParser) Enc() encoding.Encoding {
 	return simplifiedchinese.GBK
+}
+
+func (p *alipayTransParser) ParseRow(fields []string) (Trans, error) {
+	t := &AlipayTrans{
+		ID:           fields[0],
+		OrderID:      fields[1],
+		CreatedTime:  fields[2],
+		PaidTime:     fields[3],
+		ModifiedTime: fields[4],
+		Source:       fields[5],
+		Type:         fields[6],
+		Target:       fields[7],
+		Product:      fields[8],
+		FinType:      fields[10],
+		Status:       fields[11],
+		Comment:      fields[14],
+		FundStatus:   fields[15],
+		Other:        fields[16],
+	}
+	var err error
+	t.Amount, err = strconv.ParseFloat(fields[9], 64)
+	if err != nil {
+		return nil, fmt.Errorf("parse Amount: %w", err)
+	}
+	t.Charge, err = strconv.ParseFloat(fields[12], 64)
+	if err != nil {
+		return nil, fmt.Errorf("parse Charge: %w", err)
+	}
+	t.Refund, err = strconv.ParseFloat(fields[13], 64)
+	if err != nil {
+		return nil, fmt.Errorf("parse Refund: %w", err)
+	}
+	return t, nil
 }
 
 var TransParserAlipay = &alipayTransParser{}
