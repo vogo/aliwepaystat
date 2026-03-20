@@ -1,84 +1,112 @@
 package main
 
 import (
-	"flag"
+	"fmt"
 	"log"
 	"os"
-	"path/filepath"
 
 	"github.com/vogo/aliwepaystat"
-	"github.com/vogo/aliwepaystat/web"
 )
 
 func main() {
-	webMode := flag.Bool("web", false, "启动Web服务器模式")
-	configFilePath := flag.String("c", "", "config file path")
-	transFileDir := flag.String("d", "", "transaction file directory")
-	dbFilePath := flag.String("db", "", "sqlite db file path")
-	flag.Parse()
+	// Parse global flags manually before subcommand
+	configPath := ""
+	jsonOutput := false
+	var subArgs []string
 
-	// 确定数据库路径
-	dbPath := *dbFilePath
-	if dbPath == "" {
-		exe, err := os.Executable()
-		if err != nil {
-			log.Fatal(err)
+	args := os.Args[1:]
+	for i := 0; i < len(args); i++ {
+		switch args[i] {
+		case "-c":
+			if i+1 < len(args) {
+				configPath = args[i+1]
+				i++
+			} else {
+				fmt.Fprintln(os.Stderr, "Error: -c requires a path argument")
+				os.Exit(2)
+			}
+		case "--json":
+			jsonOutput = true
+		default:
+			// First non-flag argument is the subcommand
+			subArgs = args[i:]
 		}
-		baseDir := filepath.Dir(exe)
-		dbPath = filepath.Join(baseDir, "aliwepaystat.db")
+		if len(subArgs) > 0 {
+			break
+		}
 	}
-	log.Println("数据库文件:", dbPath)
 
-	// 打开数据库并确保表结构
-	db := aliwepaystat.OpenDB(dbPath)
+	if len(subArgs) == 0 {
+		printUsage()
+		os.Exit(2)
+	}
+
+	subcommand := subArgs[0]
+	cmdArgs := subArgs[1:]
+
+	if subcommand == "help" || subcommand == "--help" || subcommand == "-h" {
+		printUsage()
+		return
+	}
+
+	// Load app config
+	if configPath == "" {
+		configPath = defaultConfigPath()
+	}
+
+	appCfg, err := ensureAppConfig(configPath)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error loading config: %v\n", err)
+		os.Exit(1)
+	}
+
+	ctx := &appContext{
+		configPath: configPath,
+		appConfig:  appCfg,
+		jsonOutput: jsonOutput,
+	}
+
+	// config subcommand does not need database
+	if subcommand == "config" {
+		runConfig(ctx, cmdArgs)
+		return
+	}
+
+	// Open database for all other subcommands
+	db := aliwepaystat.OpenDB(appCfg.DBPath)
 	aliwepaystat.EnsureSchema(db)
-
-	if *webMode {
-		// Web服务器模式
-		log.Println("启动Web服务器模式...")
-		server := web.NewServer(db)
-		if err := server.Start(); err != nil {
-			log.Fatal("启动Web服务器失败:", err)
+	ctx.db = db
+	defer func() {
+		if err := db.Close(); err != nil {
+			log.Printf("Error closing database: %v", err)
 		}
-	} else {
-		// 传统命令行模式
-		baseDir := *transFileDir
-		if baseDir != "" && baseDir[len(baseDir)-1] != os.PathSeparator {
-			baseDir += string(os.PathSeparator)
-		}
-		if baseDir == "" {
-			exe, err := os.Executable()
-			if err != nil {
-				log.Fatal(err)
-			}
-			baseDir = filepath.Dir(exe)
-		}
+	}()
 
-		configPath := *configFilePath
-		if configPath == "" {
-			localConfigPath := filepath.Join(baseDir, "config.properties")
-			if _, err := os.Stat(localConfigPath); err == nil {
-				configPath = localConfigPath
-			}
-		}
-		if configPath != "" {
-			log.Println("配置文件:", configPath)
-			aliwepaystat.ParseConfig(configPath)
-		}
-
-		log.Println("统计输入目录:", baseDir)
-
-		existing := aliwepaystat.LoadExistingIDs(db)
-		aliwepaystat.ImportCsvToDB(baseDir, db, existing)
-
-		statDir := filepath.Join(baseDir, "stat")
-		if err := os.MkdirAll(statDir, 0770); err != nil && err != os.ErrExist {
-			log.Fatal(err)
-		}
-
-		aliwepaystat.BuildStatsFromDB(db)
-		aliwepaystat.GenHtmlStat(statDir)
-
-		log.Println("统计完成！")
+	switch subcommand {
+	case "import":
+		runImport(ctx, cmdArgs)
+	case "query":
+		runQuery(ctx, cmdArgs)
+	case "web":
+		runWeb(ctx, cmdArgs)
+	default:
+		fmt.Fprintf(os.Stderr, "Unknown command: %s\n", subcommand)
+		printUsage()
+		os.Exit(2)
 	}
+}
+
+func printUsage() {
+	fmt.Fprintln(os.Stderr, `Usage: aliwepaystat [-c <config-path>] [--json] <command> [args...]
+
+Commands:
+  config    Manage global configuration
+  import    Import CSV transaction files
+  query     Query transaction data and statistics
+  web       Start the web UI server
+  help      Show this help message
+
+Global Flags:
+  -c <path>   Path to config file (default: ~/.aliwepaystat.conf)
+  --json      Output in JSON format (for config, import, query commands)`)
 }
